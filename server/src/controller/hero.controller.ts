@@ -17,12 +17,19 @@ interface IAllHeroesShortType {
     image?: string
 }
 
+const offsetLimit = +(process.env.OFFSET_LIMIT as string) as number
+
 export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Response, next: NextFunction) => {
     try {
+        const page = req.query.page || 1
+        const offset = (+page - 1) * offsetLimit
+
         // const heroes = await Hero.find({ owner: req.userId }).exec()
-        const heroes = await Hero.find().exec()
+        const totalPages = Math.round(await Hero.find().count().exec() / 5)
+        const heroes = await Hero.find().skip(offset).limit(offsetLimit).exec()
+
         if (!heroes) {
-            return res.status(400).json({ message: 'Invalid hero id' })
+            return res.status(400).json({ message: 'No any heroes' })
         }
 
         const allHeroesShort: IAllHeroesShortType[] = []
@@ -32,7 +39,7 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         })
 
         logger.info('All heroes list download')
-        res.status(200).json(allHeroesShort)
+        res.status(200).json({ allHeroesShort, totalPages })
     } catch (error) {
         next(error)
     }

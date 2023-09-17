@@ -1,5 +1,5 @@
 // import { ColorModeButton, Navigation, UserMenu } from '../../index'
-import { Navigation, UserMenu } from './index'
+import { Navigation, UserMenu } from '../index'
 import { Box, IconButton, Avatar, Tooltip } from '@mui/material'
 import { useState } from 'react';
 

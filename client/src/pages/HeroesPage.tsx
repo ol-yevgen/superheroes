@@ -1,21 +1,28 @@
 import { FC, Fragment, useCallback, useContext, useEffect, useState } from "react"
-import { Spinner, HeroCard } from "../components/index"
+import { Spinner, HeroCard, PaginationControlled} from "../components/index"
 import { Box, Card, Grid } from "@mui/material"
 import { useGetHeroesQuery } from "redux/api/heroesApi"
 import { IHeroShortTypes } from "types/HeroTypes"
 
 export const HeroesPage: FC = () => {
 
-    const { data, isLoading } = useGetHeroesQuery(null)
+    const [page, setPage] = useState(1);
+
+    const { data, isLoading } = useGetHeroesQuery(page)
+
+
     // const selector = useAppSelector()
-    const heroes = data as IHeroShortTypes[]
-    
+    const heroes = data?.allHeroesShort as IHeroShortTypes[]
+    const totalPages = data?.totalPages as number
+
     return (
         <>
+            
             {isLoading
                 ? <Spinner />
-                : <Grid component='section' sx={{ width: '100%', height: '100%', display: 'grid', gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr'}, gap: '30px' }}>
-                    {heroes.map(hero => {
+                : <Box component = 'section' sx={{ width: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', flexGrow: '1'}}>
+                    <Grid sx={{ width: '100%', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: '30px' }}>
+                        {heroes.map(hero => {
                         return (
                             <Card
                                 key={hero.id}
@@ -27,7 +34,13 @@ export const HeroesPage: FC = () => {
                             
                         )
                     })}
-                </Grid>
+                    </Grid>
+                    <PaginationControlled
+                        currentPage={page}
+                        totalPages={totalPages}
+                        setPage={setPage}
+                    />
+                </Box>
             }
         </>
 

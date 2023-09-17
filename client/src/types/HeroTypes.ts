@@ -8,7 +8,6 @@ export interface IHeroShortTypes {
     nickname: string,
     image: string
 }
-
 export interface IHeroFullInfoTypes {
     id: string,
     nickname: string,
@@ -20,6 +19,7 @@ export interface IHeroFullInfoTypes {
 }
 
 export interface IHeroesResponseTypes {
-    heroes: IHeroShortTypes,
+    allHeroesShort: IHeroShortTypes[],
+    totalPages: number,
     message?: string
 }

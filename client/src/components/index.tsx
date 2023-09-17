@@ -1,10 +1,12 @@
 // Layout
 import { Header } from "./Layout/Heder";
 import { Footer } from './Layout/Footer'
-import { UserMenu } from "./UserMenu";
-import { Navigation } from './Navigation';
-import { MobileNav } from './MobileNav'
-import { MainNav } from './MainNav'
+
+// Navigation
+import { UserMenu } from "./Navigation/UserMenu";
+import { Navigation } from './Navigation/Navigation';
+import { MobileNav } from './Navigation/MobileNav'
+import { MainNav } from './Navigation/MainNav'
 
 // Hero
 import { HeroCard } from "./HeroCard";
@@ -12,6 +14,7 @@ import { HeroCard } from "./HeroCard";
 //Components
 import { PaginationSwiper } from './Swiper'
 import { TransitionsModal } from './TransitionsModal'
+import { PaginationControlled } from './Pagination'
 
 // UI
 // import { ColorModeButton } from './UI/ColorModeButton';
@@ -27,17 +30,21 @@ import { Spinner } from './UI/Spinner'
 export {
     // Layout
     Header,
+    Footer,
+
+    // Navigation
     UserMenu,
     MainNav,
     Navigation,
     MobileNav,
-    Footer,
 
     // Hero
     HeroCard,
+
     //Components
     PaginationSwiper,
     TransitionsModal,
+    PaginationControlled,
 
     // UI
     // ColorModeButton,

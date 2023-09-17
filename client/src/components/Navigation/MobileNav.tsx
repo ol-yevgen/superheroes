@@ -1,4 +1,4 @@
-import { Navigation } from './index';
+import { Navigation } from 'components/index';
 import { Box, IconButton, Menu } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
