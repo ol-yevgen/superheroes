@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getHeroes } from 'redux/features/heroesSlice';
-import { getHero } from 'redux/features/heroSlice';
-import { IHeroShortTypes, IHeroFullInfoTypes, IHeroesResponseTypes } from 'types/HeroTypes';
+import { getHeroes, getHero, createHero } from 'redux/features/heroesSlice';
+import { IHeroFullInfoTypes, IHeroesResponseTypes } from 'types/HeroTypes';
 import { successToast, errorToast } from 'utils/toast'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL as string;
@@ -33,7 +32,7 @@ export const heroesApi = createApi({
         //GET ONE HERO INFO
         getHero: builder.query<IHeroFullInfoTypes, string>({
             query: (id: string) => ({
-                url: `heroes/${id}`,
+                url: `hero/${id}`,
                 credentials: 'include',
                 mode: 'cors',
 
@@ -48,10 +47,31 @@ export const heroesApi = createApi({
                 }
             }
         }),
+        
+        //CREATE HERO
+        createHero: builder.mutation<{}, FormData>({
+            query: (data) => ({
+                url: `/hero`,
+                credentials: 'include',
+                mode: 'cors',
+                method: 'POST',
+                body: data
+            }),
+            transformResponse: (result: FormData) => result,
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const {data} = await queryFulfilled;
+                    dispatch(createHero(data));
+                } catch (err) {
+                    errorToast('Please, fill up all required fields')
+                }
+            }
+        }),
     }),
 });
 
 export const {
     useGetHeroesQuery,
-    useGetHeroQuery  
+    useGetHeroQuery,
+    useCreateHeroMutation
 } = heroesApi;

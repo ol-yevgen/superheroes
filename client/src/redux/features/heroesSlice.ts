@@ -1,12 +1,16 @@
-import { IHeroShortTypes } from 'types/HeroTypes';
+import { IHeroFullInfoTypes, IHeroShortTypes } from 'types/HeroTypes';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface HeroesState {
-    heroes: IHeroShortTypes[] | null;
+export interface HeroesState {
+    heroesShortInfo: IHeroShortTypes[];
+    hero: IHeroFullInfoTypes | null;
+    heroes: IHeroFullInfoTypes[]
 }
 
 const initialState: HeroesState = {
-    heroes: null ,
+    heroesShortInfo: [],
+    heroes: [],
+    hero: null
 }
 
 const heroesSlice = createSlice({
@@ -14,11 +18,18 @@ const heroesSlice = createSlice({
     name: 'heroesSlice',
     reducers: {
         getHeroes: (state, action: PayloadAction<IHeroShortTypes[]>) => {
-            state.heroes = action.payload;
+            state.heroesShortInfo = action.payload;
+        },
+        getHero: (state, action: PayloadAction<IHeroFullInfoTypes>) => {
+            state.hero = action.payload;
+        },
+        createHero: (state, action: PayloadAction<IHeroFullInfoTypes>) => {
+            state.heroes.push(action.payload) 
         }
+
     }
 });
 
 export default heroesSlice.reducer;
 
-export const { getHeroes } = heroesSlice.actions;
+export const { getHeroes, getHero, createHero } = heroesSlice.actions;

@@ -23,7 +23,8 @@ export const MainLayout: FC = () => {
             <Container maxWidth='xl' component="main" sx={
                 {
                     width: '100%',
-                    p: '30px',
+                    px: '30px',
+                    pt: '30px',
                     display: 'flex',
                     justifyContent: 'center',
                     flexGrow: '1',

@@ -7,9 +7,11 @@ interface InputTypes {
     name: string,
     error: FieldError | undefined ,
     register: any,
+    multiline: boolean
+    maxRows: number,
 }
 
-export const Input: FC<InputTypes> = ({ label, name, register, error }) => {
+export const Input: FC<InputTypes> = ({ label, name, register, error, multiline, maxRows,  }) => {
     return (
         <TextField
             variant="outlined"
@@ -21,6 +23,8 @@ export const Input: FC<InputTypes> = ({ label, name, register, error }) => {
             id={name}
             label={label.slice(0, 1).toUpperCase() + label.slice(1)}
             name={name}
+            maxRows={maxRows}
+            multiline={multiline}
             error={!!error}
             autoComplete={`new-${name}`}
             helperText={

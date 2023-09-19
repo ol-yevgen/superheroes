@@ -2,15 +2,15 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/pagination';
 import 'swiper/css';
 import { Box, CardActionArea, CardMedia } from '@mui/material';
-import { IImageListTypes } from 'types/HeroTypes';
+import { IImageListResponseTypes } from 'types/HeroTypes';
 
-interface IImagesTypes {
-    imagesList: IImageListTypes[] | undefined,
+interface ISwiperPropsTypes {
+    imagesList: IImageListResponseTypes[] | [] | undefined,
     handleOpen: (link: string) => void
 }
 
-export const PaginationSwiper = ({ imagesList, handleOpen }: IImagesTypes) => {
-    const swiperList = JSON.parse(JSON.stringify(imagesList)).slice(1) as IImageListTypes[]
+export const PaginationSwiper = ({ imagesList, handleOpen }: ISwiperPropsTypes) => {
+    const swiperList = JSON.parse(JSON.stringify(imagesList)).slice(1) as IImageListResponseTypes[]
 
     return (
         <>
@@ -19,7 +19,7 @@ export const PaginationSwiper = ({ imagesList, handleOpen }: IImagesTypes) => {
                 spaceBetween={30}
                 loop={true}
             >
-                {swiperList.map((image: IImageListTypes) => {
+                {swiperList.map((image: IImageListResponseTypes) => {
                     return (
                         <SwiperSlide key={image._id}>
                             <CardActionArea onClick={() => handleOpen(image.link)}>

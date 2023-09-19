@@ -1,5 +1,5 @@
-export interface IImageListTypes {
-    _id: string,
+export interface IImageListResponseTypes {
+    _id?: string,
     link: string
 }
 
@@ -8,14 +8,14 @@ export interface IHeroShortTypes {
     nickname: string,
     image: string
 }
+
 export interface IHeroFullInfoTypes {
-    id: string,
-    nickname: string,
-    real_name: string,
-    origin_description: string,
-    superpowers: string,
-    catch_phase: string,
-    images: IImageListTypes[]
+    nickname?: string,
+    real_name?: string,
+    origin_description?: string,
+    superpowers?: string,
+    catch_phase?: string,
+    images?: IImageListResponseTypes[] | [] | any
 }
 
 export interface IHeroesResponseTypes {

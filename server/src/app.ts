@@ -5,14 +5,19 @@ import createHttpError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import router from './routes/routes.js';
 import logger from './utils/logger.js';
+import path from 'path'
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors'
 import 'dotenv/config'
 
+import { fileURLToPath } from 'url';
+
 const PORT = process.env.PORT || 5050
-const BASE_FRONTEND_URL =
-    process.env.BASE_FRONTEND_URL as string
+const BASE_FRONTEND_URL = process.env.BASE_FRONTEND_URL as string
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express()
 
@@ -25,12 +30,15 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.json())
+app.use('/src/uploads',express.static((__dirname + '/uploads')));
 app.use(router)
+app.use(errorHandler)
+
+logger.info(__dirname)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     next(createHttpError(404, 'Page not found'))
 })
-app.use(errorHandler) 
 
 connectToBd()
 

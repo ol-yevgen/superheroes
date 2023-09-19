@@ -15,14 +15,16 @@ import { HeroCard } from "./HeroCard";
 import { PaginationSwiper } from './Swiper'
 import { TransitionsModal } from './TransitionsModal'
 import { PaginationControlled } from './Pagination'
+import { CreateUpdateForm } from './CreateUpdateForm'
 
 // UI
 // import { ColorModeButton } from './UI/ColorModeButton';
 import { Logo } from "./UI/Logo";
 // import { CheckBox } from "./UI/CheckBox";
 // import { TaskTitle } from "./Task/Title";
-// import { Input } from "./UI/Input";
+import { Input } from "./UI/Input";
 import { SubmitButton } from './UI/SubmitButton';
+import { FileUploader } from './UI/FileUploader'
 import { Spinner } from './UI/Spinner'
 // import { DeleteButton } from "./UI/DeleteButton";
 // import { MouseOverPopover } from './UI/Popover'
@@ -45,13 +47,15 @@ export {
     PaginationSwiper,
     TransitionsModal,
     PaginationControlled,
+    CreateUpdateForm,
 
     // UI
     // ColorModeButton,
     Logo,
     // CheckBox,
     // TaskTitle,
-    // Input,
+    Input,
+    FileUploader,
     SubmitButton,
     Spinner,
     // DeleteButton,
