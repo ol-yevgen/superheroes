@@ -17,7 +17,7 @@ export const PaginationControlled = ({ currentPage, totalPages, setPage }: IPagi
     };
 
     return (
-        <Stack spacing={2} sx={{py: '20px'}}>
+        <Stack spacing={2} sx={{pt: '20px'}}>
             <Pagination count={totalPages} page={currentPage} onChange={handleChange} />
         </Stack>
     );

@@ -4,8 +4,8 @@ import mongoose from 'mongoose'
 import logger from '../utils/logger.js'
 import { UserIdRequest, UpdateHeroParams, HeroUpdateBody } from '../types/Types.js'
 import fs from 'fs'
+import { __dirname } from '../app.js'
 // import createHttpError from 'http-errors'
-
 
 interface IAllHeroesShortType {
     id: mongoose.Types.ObjectId,
@@ -22,7 +22,7 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         const offset = (+page - 1) * OFFSET_LIMIT
 
         // const heroes = await Hero.find({ owner: req.userId }).exec()
-        const totalPages = Math.round(await Hero.find().count().exec() / 5)
+        const totalPages = Math.ceil(await Hero.find().count().exec() / 5)
         const heroes = await Hero.find().sort({ createdAt: -1 }).skip(offset).limit(OFFSET_LIMIT).exec()
 
         if (!heroes) {
@@ -109,7 +109,7 @@ export const createHero = async (req: Request, res: Response, next: NextFunction
         })
 
         await newHero.save()
-        
+
         res.json({ message: `Hero has been created` });
         logger.info('File has been upload')
     } catch (error) {
@@ -193,10 +193,21 @@ export const deleteHero: RequestHandler = async (req: Request, res: Response, ne
             return res.status(404).json({ message: 'Hero not found' })
         }
 
+        hero.images.forEach(item => {
+            const imagePath = item.link?.replace('http://localhost:4000/src', __dirname) as string
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    logger.info(err)
+                } else {
+                    logger.info(`File ${imagePath} has been deleted`)
+                }
+            })
+        })
+
         await hero.deleteOne()
 
-        logger.error('Hero has been deleted')
-        return res.status(201).json({ message: 'Hero has been deleted' })
+        logger.info('Hero has been deleted')
+        res.status(201).json({id: heroId, message: 'Hero has been deleted' })
     } catch (error) {
         next(error)
     }

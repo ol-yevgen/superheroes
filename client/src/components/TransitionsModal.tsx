@@ -1,4 +1,8 @@
-import { Modal, Backdrop, Box, Fade, CardMedia } from '@mui/material';
+import { Modal, Backdrop, Box, CardMedia } from '@mui/material';
+import { setModal } from 'redux/features/modalSlice';
+import { useAppDispatch } from 'redux/store';
+import { ITransitionModal } from 'types/HeroTypes';
+import { CreateUpdateForm } from './CreateUpdateForm';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -6,24 +10,26 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '70%',
+    height: '90%',
     bgcolor: 'background.paper',
-    outline: 'none'
+    outline: 'none',
+    overflowY: 'scroll'
 };
 
-interface ITransitionModal {
-    open: boolean,
-    image: string,
-    handleClose: () => void
-}
+export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
+    const dispatch = useAppDispatch()
 
-export const TransitionsModal = ({ open, image, handleClose }: ITransitionModal) => {
+    const closeModal = (link: string) => {
+        handleOpenClose(link)
+        dispatch(setModal())
+    }
 
     return (
         <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             open={open}
-            onClose={handleClose}
+            onClose={() => closeModal('')}
             closeAfterTransition
             slots={{ backdrop: Backdrop }}
             slotProps={{
@@ -31,16 +37,20 @@ export const TransitionsModal = ({ open, image, handleClose }: ITransitionModal)
                     timeout: 500,
                 },
             }}
-            sx={{cursor: 'pointer'}}
+            sx={{ cursor: 'pointer', }}
         >
             <Box sx={style}>
-                <CardMedia
-                    component='img'
-                    width='100%'
-                    height='100%'
-                    image={image}
-                    alt={image}
-                />
+                {image
+                    ? <CardMedia
+                        component='img'
+                        width='100%'
+                        height='100%'
+                        image={image}
+                        alt={image}
+                    />
+                    : < CreateUpdateForm heroData={data} /> 
+                    
+                }
             </Box>
         </Modal>
     );

@@ -1,9 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getHeroes, getHero, createHero } from 'redux/features/heroesSlice';
+import { getHeroes, getHero, createHero, updateHero, deleteHero } from 'redux/features/heroesSlice';
 import { IHeroFullInfoTypes, IHeroesResponseTypes } from 'types/HeroTypes';
 import { successToast, errorToast } from 'utils/toast'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL as string;
+
+interface IUpdateReqData {
+    data: FormData,
+    id: string
+}
 
 export const heroesApi = createApi({
     reducerPath: 'heroesApi',
@@ -57,11 +62,49 @@ export const heroesApi = createApi({
                 method: 'POST',
                 body: data
             }),
-            transformResponse: (result: FormData) => result,
+            // transformResponse: (result: FormData) => result,
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const {data} = await queryFulfilled;
-                    dispatch(createHero(data));
+                    // dispatch(createHero(data));
+                } catch (err) {
+                    errorToast('Please, fill up all required fields')
+                }
+            }
+        }),
+
+        //UPDATE HERO
+        updateHero: builder.mutation<{}, IUpdateReqData>({
+            query: ({data, id}) => ({
+                url: `/hero/${id}`,
+                credentials: 'include',
+                mode: 'cors',
+                method: 'PATCH',
+                body: data
+            }),
+            transformResponse: (result: FormData) => result,
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(updateHero(data));
+                } catch (err) {
+                    errorToast('Please, fill up all required fields')
+                }
+            }
+        }),
+
+        //DELETE HERO
+        deleteHero: builder.mutation<any, string>({
+            query: (id: string) => ({
+                url: `/hero/${id}`,
+                credentials: 'include',
+                mode: 'cors',
+                method: 'DELETE',
+            }),
+            async onQueryStarted(args, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    dispatch(deleteHero(data.id as string));
                 } catch (err) {
                     errorToast('Please, fill up all required fields')
                 }
@@ -73,5 +116,7 @@ export const heroesApi = createApi({
 export const {
     useGetHeroesQuery,
     useGetHeroQuery,
-    useCreateHeroMutation
+    useCreateHeroMutation,
+    useUpdateHeroMutation,
+    useDeleteHeroMutation
 } = heroesApi;

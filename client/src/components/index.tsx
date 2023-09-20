@@ -22,11 +22,12 @@ import { CreateUpdateForm } from './CreateUpdateForm'
 import { Logo } from "./UI/Logo";
 // import { CheckBox } from "./UI/CheckBox";
 // import { TaskTitle } from "./Task/Title";
+import { EditButton } from "./UI/EditButton"
 import { Input } from "./UI/Input";
 import { SubmitButton } from './UI/SubmitButton';
 import { FileUploader } from './UI/FileUploader'
 import { Spinner } from './UI/Spinner'
-// import { DeleteButton } from "./UI/DeleteButton";
+import { DeleteButton } from "./UI/DeleteButton";
 // import { MouseOverPopover } from './UI/Popover'
 
 export {
@@ -58,6 +59,7 @@ export {
     FileUploader,
     SubmitButton,
     Spinner,
-    // DeleteButton,
+    DeleteButton,
+    EditButton
     // MouseOverPopover,
 }

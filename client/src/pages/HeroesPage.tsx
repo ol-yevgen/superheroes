@@ -1,13 +1,15 @@
 import { FC, useState } from "react"
 import { Spinner, HeroCard, PaginationControlled} from "../components/index"
-import { Box, Card, Grid } from "@mui/material"
+import { Box, Card, Grid, Typography } from "@mui/material"
 import { useGetHeroesQuery } from "redux/api/heroesApi"
 import { IHeroShortTypes } from "types/HeroTypes"
+import { useAppSelector } from "redux/store"
 
 export const HeroesPage: FC = () => {
 
     const [page, setPage] = useState(1);
 
+    const heroesShortInfo = useAppSelector( state => state.heroesState.heroesShortInfo)
     const { data, isLoading } = useGetHeroesQuery(page)
 
     const heroes = data?.allHeroesShort as IHeroShortTypes[]
@@ -18,7 +20,11 @@ export const HeroesPage: FC = () => {
             
             {isLoading 
                 ? <Spinner />
-                : <Box component = 'section' sx={{ width: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', flexGrow: '1'}}>
+                : heroes.length === 0
+                    ? <Typography component="h1" variant="h4">
+                        No any heroes in database
+                    </Typography>
+                    : <Box component='section' sx={{ width: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', flexGrow: '1' }}>
                     <Grid sx={{ width: '100%', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: '30px' }}>
                         {heroes?.map(hero => {
                         return (

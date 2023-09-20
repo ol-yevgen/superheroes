@@ -3,29 +3,22 @@ import { Input, SubmitButton, FileUploader } from "components/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
-import { FormEvent, useEffect, useState } from "react"
-import { IHeroFullInfoTypes, IImageListResponseTypes } from 'types/HeroTypes';
+import { FormEvent, useCallback, useState } from "react"
+import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
 import { heroSchema } from 'schemas/heroSchema'
+import { useCreateHeroMutation } from 'redux/api/heroesApi';
 
-interface ICreateUpdateFormPropsTypes {
-    createOrUpdateHero: (arg: FormData) => void,
-    heroData: IHeroFullInfoTypes | null,
-    isLoading: boolean,
-    isError: boolean,
-    isSuccess: boolean
-}
+export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => {
+    // export const CreateUpdateForm = () => {
+    const [createHero, { isError, isSuccess, data }] = useCreateHeroMutation()
 
-export const CreateUpdateForm = ({ createOrUpdateHero, heroData, isLoading, isError, isSuccess }: ICreateUpdateFormPropsTypes) => {
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
-
     const navigate = useNavigate()
-    const isHeroData = heroData?.nickname !== ''
 
     const {
         register,
         getValues,
         formState: {
-            isSubmitSuccessful,
             errors,
             isValid,
         },
@@ -45,14 +38,7 @@ export const CreateUpdateForm = ({ createOrUpdateHero, heroData, isLoading, isEr
         }
     )
 
-    useEffect(() => {
-        if (isSubmitSuccessful) {
-            reset();
-        }
-        // eslint-disable-next-line
-    }, [isSubmitSuccessful]);
-
-    const onHandleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const onHandleCreateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const { nickname, real_name, superpowers, catch_phase, origin_description } = getValues()
         const formData = new FormData();
@@ -63,28 +49,28 @@ export const CreateUpdateForm = ({ createOrUpdateHero, heroData, isLoading, isEr
         formData.set('origin_description', origin_description as string)
 
         for (const file of selectedPictures) {
-            formData.append('images', file);
+            formData.append('images', file as File);
         }
 
-        createOrUpdateHero(formData)
+        createHero(formData)
 
         setSelectedPictures([])
         reset()
-        navigate('/heroes')
-    };
+        navigate(`/heroes`)
+    }, [createHero, getValues, navigate, reset, selectedPictures]);
 
     return (
-        <Paper  elevation={3} sx={{ height: '100%', padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Paper elevation={3} sx={{padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' ,}}>
             <Typography component="h1" variant="h5">
-                {isHeroData ? 'Update hero' : 'Create new hero'}
+                {heroData ? 'Update hero' : 'Create new hero'}
             </Typography>
             <Box
                 component='form'
                 autoComplete='off'
                 maxWidth='md'
-                sx={{ width: '100%', marginTop: '1rem' }}
+                sx={{ width: '100%', marginTop: '1rem',  }}
             >
-                <Box sx={{ display: { xs: 'block', sm: 'flex' }, gap: '30px' }}>
+                <Box sx={{ display: { xs: 'block', sm: 'flex' }, gap: '30px', borderRadius: '10px'}}>
                     <Input
                         label='Nickname'
                         name='nickname'
@@ -132,16 +118,23 @@ export const CreateUpdateForm = ({ createOrUpdateHero, heroData, isLoading, isEr
                 <FileUploader
                     isSuccess={isSuccess}
                     isError={isError}
+                    imagesList={heroData?.images}
                     selectedPictures={selectedPictures}
                     setSelectedPictures={setSelectedPictures}
                 />
 
                 <SubmitButton
-                    label='Create hero'
-                    onHandleSubmit={onHandleSubmit}
+                    label={heroData ? 'Update hero' : 'Create hero'}
+                    onHandleSubmit={onHandleCreateSubmit}
                     isValid={isValid}
                 />
             </Box>
         </Paper>
     );
 }
+
+// Nickname: Joker
+// Real name: Joker
+// Phase:“Look, up in the sky, it's a bird, it's a plane, it's Superman!”
+// Superpowers:solar energy absorption and healing factor, solar flare and heat vision, solar invulnerability, flight...
+// Description:he was born Kal - El on the planet Krypton, before being rocketed to Earth as an infant by his scientist father Jor - El, moments before Krypton's destruction...

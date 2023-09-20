@@ -4,12 +4,13 @@ export interface IImageListResponseTypes {
 }
 
 export interface IHeroShortTypes {
-    id: string,
+    id?: string,
     nickname: string,
     image: string
 }
 
 export interface IHeroFullInfoTypes {
+    _id?: string,
     nickname?: string,
     real_name?: string,
     origin_description?: string,
@@ -22,4 +23,16 @@ export interface IHeroesResponseTypes {
     allHeroesShort: IHeroShortTypes[],
     totalPages: number,
     message?: string
+}
+
+export interface ICreateUpdateFormPropsTypes {
+    // heroData: IHeroFullInfoTypes | null,
+    heroData: any,
+}
+
+export interface ITransitionModal {
+    open: boolean,
+    image: string,
+    data?: IHeroFullInfoTypes,
+    handleOpenClose: (link: string) => void,
 }
