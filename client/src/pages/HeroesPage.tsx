@@ -3,13 +3,10 @@ import { Spinner, HeroCard, PaginationControlled } from "../components/index"
 import { Box, Card, Grid, Typography } from "@mui/material"
 import { useGetHeroesQuery } from "redux/api/heroesApi"
 import { IHeroShortTypes } from "types/HeroTypes"
-import { useAppSelector } from "redux/store"
 
 export const HeroesPage: FC = () => {
 
     const [page, setPage] = useState(1);
-
-    const heroesShortInfo = useAppSelector(state => state.heroesState.heroesShortInfo)
 
     const { data, isLoading } = useGetHeroesQuery(page)
 
@@ -21,7 +18,7 @@ export const HeroesPage: FC = () => {
 
     return (
         <>
-            {heroesShortInfo.length === 0
+            {heroes.length === 0 
                 ? <Typography component="h1" variant="h4">
                     No any heroes in database
                 </Typography>

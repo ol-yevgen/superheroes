@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getHeroes, getHero, createHero, deleteHero } from 'redux/features/heroesSlice';
+// import { getHeroes, getHero, createHero, deleteHero } from 'redux/features/heroesSlice';
 import { IHeroFullInfoTypes, IHeroShortTypes, IHeroesResponseTypes } from 'types/HeroTypes';
 import { successToast, errorToast } from 'utils/toast'
 
@@ -7,7 +7,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL as string;
 
 interface IUpdateReqData {
     formData: FormData,
-    id: string
+    heroId: string
 }
 
 export const heroesApi = createApi({
@@ -15,7 +15,7 @@ export const heroesApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL + 'api/',
     }),
-    tagTypes: ['Heroes'],
+    tagTypes: ['Heroes', 'Hero'],
     // refetchOnFocus: true,
     endpoints: (builder) => ({
         // GET PAGE OF HEROES
@@ -30,7 +30,7 @@ export const heroesApi = createApi({
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    dispatch(getHeroes(data.allHeroesShort));
+                    // dispatch(getHeroes(data.allHeroesShort));
                 } catch (err) {
                     errorToast('Something went wrong')
                 }
@@ -44,11 +44,12 @@ export const heroesApi = createApi({
                 mode: 'cors',
 
             }),
+            providesTags: ['Hero'],
             transformResponse: (result: IHeroFullInfoTypes) => result,
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    dispatch(getHero(data));
+                    // dispatch(getHero(data));
                 } catch (err) {
                     errorToast('Something went wrong')
                 }
@@ -77,15 +78,15 @@ export const heroesApi = createApi({
         }),
 
         //UPDATE HERO
-        updateHero: builder.mutation<string, any>({
-            query: ({formData, id}) => ({
-                url: `/hero/${id}`,
+        updateHero: builder.mutation<any, IUpdateReqData>({
+            query: ({ formData, heroId }) => ({
+                url: `/hero/${heroId}`,
                 credentials: 'include',
                 mode: 'cors',
-                method: 'PATCH',
-                body: formData
+                method: 'PUT',
+                body: formData,
             }),
-            invalidatesTags: (result)=> [{type: 'Heroes', id: result}],
+            invalidatesTags: ['Heroes', 'Hero'],
 
             // transformResponse: (result: FormData) => result,
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
@@ -110,7 +111,7 @@ export const heroesApi = createApi({
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled
-                    dispatch(deleteHero(data.id as string));
+                    // dispatch(deleteHero(data.id as string));
                 } catch (err) {
                     errorToast('Please, fill up all required fields')
                 }

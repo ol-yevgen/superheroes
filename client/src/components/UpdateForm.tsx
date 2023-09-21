@@ -1,23 +1,32 @@
-import { Typography, Paper, Box } from '@mui/material';
+import { Typography, Paper, Box, Button, CardMedia, IconButton } from '@mui/material';
 import { Input, SubmitButton, FileUploader } from "components/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
-import { FormEvent, useCallback, useState } from "react"
-import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
-import { heroSchema } from 'schemas/heroSchema'
+import {  useParams } from 'react-router-dom';
+import { FormEvent, useCallback, useEffect, useState } from "react"
+import { heroUpdateSchema } from 'schemas/heroSchema'
 import { useUpdateHeroMutation } from 'redux/api/heroesApi';
+import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
+import { Cancel as CancelIcon } from '@mui/icons-material';
+import { useAppDispatch } from 'redux/store';
+import { setModal } from 'redux/features/modalSlice';
 
 export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
-    // export const CreateUpdateForm = () => {
-    const [updateHero, { isError, isSuccess}] = useUpdateHeroMutation()
+    const heroId = useParams().id as string
+    const dispatch = useAppDispatch()
 
+    const [updateHero, { isError, isSuccess, error, data}] = useUpdateHeroMutation()
+    const [imageListToDelete, setImageListToDelete] = useState<IImageListResponseTypes[]>([]);
+    const [imageLinksRemain, setImageLinksRemain] = useState<IImageListResponseTypes[]>(heroData?.images)
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
-    const navigate = useNavigate()
+
+    // console.log(JSON.stringify(data));
 
     const {
+        control,
         register,
         getValues,
+        resetField,
         formState: {
             errors,
             isValid,
@@ -31,12 +40,28 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 superpowers: heroData?.superpowers,
                 catch_phase: heroData?.catch_phase,
                 origin_description: heroData?.origin_description,
-                images: []
+                images: [] ,
+                images_remain: [] as IImageListResponseTypes[],
             },
             mode: "onChange",
-            resolver: yupResolver(heroSchema)
+            resolver: yupResolver(heroUpdateSchema)
         }
-    )
+        )
+
+    useEffect(() => {
+        if (selectedPictures.length === 0) {
+            resetField('images')
+        }
+    }, [resetField, selectedPictures])
+   
+    const handleDeleteExistingPicture = async (index: number) => {
+
+        setImageListToDelete([...imageListToDelete, imageLinksRemain[index]]);
+
+        setImageLinksRemain((prevRemainImage) =>
+            prevRemainImage.filter((_, i) => i !== index)
+        );
+    };
 
     const onHandleUpdateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -51,19 +76,22 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         for (const file of selectedPictures) {
             formData.append('images', file as File);
         }
-
-        updateHero(formData);
+        formData.append('images_remain', JSON.stringify(imageLinksRemain));
+        
+        updateHero({ formData, heroId });
 
         setSelectedPictures([])
+        // dispatch(setModal())
         reset()
-        navigate(`/heroes`)
-    }, [updateHero, getValues, navigate, reset, selectedPictures]);
+    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain]);
+    // }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
 
     return (
-        <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+        <Paper elevation={3} sx={{ padding: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mb: '30px' }}>
             <Typography component="h1" variant="h5">
-                {heroData ? 'Update hero' : 'Create new hero'}
+                Update hero {heroData?.nickname}
             </Typography>
+            {isError && <Box component='span'>Error</Box>}
             <Box
                 component='form'
                 autoComplete='off'
@@ -71,6 +99,7 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 sx={{ width: '100%', marginTop: '1rem', }}
             >
                 <Box sx={{ display: { xs: 'block', sm: 'flex' }, gap: '30px', borderRadius: '10px' }}>
+
                     <Input
                         label='Nickname'
                         name='nickname'
@@ -97,6 +126,7 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                     multiline={true}
                     maxRows={3}
                 />
+
                 <Input
                     label='Catch phase'
                     name='catch_phase'
@@ -115,26 +145,39 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                     maxRows={5}
                 />
 
-                {/* <FileUploader
-                    isSuccess={isSuccess}
-                    isError={isError}
-                    imagesList={heroData?.images}
+                {imageLinksRemain
+                    && <Box sx={{  position: 'relative', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' } }}>
+                        {imageLinksRemain.map((image, index) => (
+                            <Box key={index} sx={{ position: 'relative', width: '150px', height: '90px', borderRadius: '4px', overflow: 'hidden' }}>
+                                <CardMedia
+                                    component='img'
+                                    height='100%'
+                                    image={image.link}
+                                    alt={`Selected ${index + 1}`}
+                                    sx={{ width: '100%', objectFit: 'cover' }}
+                                />
+                                <IconButton
+                                    onClick={() => handleDeleteExistingPicture(index)}
+                                    sx={{ position: 'absolute', top: 0, right: 0 }}
+                                >
+                                    <CancelIcon />
+                                </IconButton>
+                            </Box>
+                        ))}
+                    </Box>}
+
+                <FileUploader
+                    control={control}
                     selectedPictures={selectedPictures}
                     setSelectedPictures={setSelectedPictures}
-                /> */}
-{/* 
+                />
+
                 <SubmitButton
-                    label={heroData ? 'Update hero' : 'Create hero'}
+                    label={'Update hero'}
                     onHandleSubmit={onHandleUpdateSubmit}
                     isValid={isValid}
-                /> */}
+                />
             </Box>
         </Paper>
     );
 }
-
-// Nickname: Joker
-// Real name: Joker
-// Phase:“Look, up in the sky, it's a bird, it's a plane, it's Superman!”
-// Superpowers:solar energy absorption and healing factor, solar flare and heat vision, solar invulnerability, flight...
-// Description:he was born Kal - El on the planet Krypton, before being rocketed to Earth as an infant by his scientist father Jor - El, moments before Krypton's destruction...

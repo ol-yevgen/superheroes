@@ -4,7 +4,7 @@ import {  useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect, useState } from "react"
-import { heroSchema } from 'schemas/heroSchema'
+import { heroCreateSchema } from 'schemas/heroSchema'
 import { useCreateHeroMutation } from 'redux/api/heroesApi';
 
 export const AddNewHeroPage = () => {
@@ -34,7 +34,7 @@ export const AddNewHeroPage = () => {
                 images: '' 
             },
             mode: "onChange",
-            resolver: yupResolver(heroSchema)
+            resolver: yupResolver(heroCreateSchema)
         }
     )
 

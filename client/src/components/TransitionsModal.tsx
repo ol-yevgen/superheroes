@@ -36,7 +36,7 @@ export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransi
                 height: image ? 'auto' : '90%',
                 bgcolor: 'background.paper',
                 outline: 'none',
-                overflow: image ? 'hidden' : 'scroll'
+                overflowY: image ? 'hidden' : 'scroll'
             }}>
                 {image
                     ? <CardMedia

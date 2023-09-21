@@ -23,13 +23,3 @@ a {
 .task__title {
     width: 88%;
 }
-
-.example::-webkit-scrollbar {
-  display: none;
-}
- 
-/* Скрываем scrollbar для IE, Edge и Firefox */
-.example {
-  -ms-overflow-style: none;  /* IE и Edge */
-  scrollbar-width: none;  /* Firefox */
-}

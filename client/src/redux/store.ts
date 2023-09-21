@@ -1,25 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { heroesApi } from './api/heroesApi';
-import heroesReducer from './features/heroesSlice';
 import modalSlice from './features/modalSlice'
-// import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 export const store = configureStore({
     reducer: {
         [heroesApi.reducerPath]: heroesApi.reducer,
-        heroesState: heroesReducer,
         modalState: modalSlice,
     },
     devTools: process.env.REACT_APP_NODE_ENV === 'development',
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({}).concat([
         heroesApi.middleware,
-        // authApi.middleware,
-        // userProfileApi.middleware,
     ]),
 })
-
-// setupListeners(store.dispatch)
 
 export type TRootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

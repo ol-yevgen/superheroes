@@ -2,9 +2,10 @@ import { NextFunction, Request, Response, RequestHandler } from 'express'
 import Hero from '../models/hero.model.js'
 import mongoose from 'mongoose'
 import logger from '../utils/logger.js'
-import { UserIdRequest, UpdateHeroParams, HeroUpdateBody } from '../types/Types.js'
+import { UserIdRequest, UpdateHeroParams, HeroBody, IImagesLinksList } from '../types/Types.js'
 import fs from 'fs'
 import { __dirname } from '../app.js'
+import { urlList } from '../utils/createImageUrl.js'
 // import createHttpError from 'http-errors'
 
 interface IAllHeroesShortType {
@@ -14,7 +15,7 @@ interface IAllHeroesShortType {
 }
 
 const OFFSET_LIMIT = +(process.env.OFFSET_LIMIT as string) as number
-const BASE_API = process.env.BASE_API_URL as string
+// const BASE_API = process.env.BASE_API_URL as string
 
 export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Response, next: NextFunction) => {
     try {
@@ -66,7 +67,7 @@ export const getHero: RequestHandler = async (req: Request, res: Response, next:
     }
 }
 
-export const createHero = async (req: Request, res: Response, next: NextFunction) => {
+export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unknown> = async (req, res, next) => {
 
     try {
         const { nickname,
@@ -80,24 +81,6 @@ export const createHero = async (req: Request, res: Response, next: NextFunction
         }
 
         const fileList = req.files as Express.Multer.File[]
-        // res.json({ url: `uploads/${req.file?.filename}`, message: `Files have been upload` })
-
-        // Save image metadata to MongoDB
-        // const savedImages = await Promise.all(
-        //     imageUrls.map(async (url: string) => {
-        //         const image = new ImageModel({ filename: path.basename(url), url });
-        //         return await image.save();
-        //     })
-        // );
-        const urlList = fileList.map((file) => {
-            const { originalname, path } = file
-            const parts = originalname.split('.')
-            const ext = parts[parts.length - 1]
-            const newPath = path + '.' + ext
-            fs.renameSync(path, newPath)
-
-            return { link: BASE_API + '/' + newPath }
-        })
 
         const newHero = new Hero({
             nickname: nickname,
@@ -105,7 +88,7 @@ export const createHero = async (req: Request, res: Response, next: NextFunction
             origin_description: origin_description,
             superpowers: superpowers,
             catch_phase: catch_phase,
-            images: urlList,
+            images: urlList(fileList),
         })
 
         await newHero.save()
@@ -119,57 +102,64 @@ export const createHero = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroUpdateBody, unknown> = async (req, res, next) => {
-    const heroId = req.params.heroId
-    const { nickname,
-        real_name,
-        origin_description,
-        superpowers,
-        catch_phase,
-        images
-    } = req.body
-
+export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unknown> = async (req, res, next) => {
+// export const updateHero = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const nicknameExisted = await Hero.findOne({ nickname })
 
-        const hero = await Hero.findById(heroId).exec()
+        // const files = req.files
+        const heroId = req.params.heroId
+        const { nickname,
+            // real_name,
+            // origin_description,
+            // superpowers,
+            // catch_phase,
+            images_remain
+        } = req.body
 
-        if (!hero) {
-            logger.error('Hero not found')
-            return res.status(400).json({ message: 'Hero not found' })
-        }
+        const listOfRemainImages = JSON.parse(images_remain) as IImagesLinksList[]
+        listOfRemainImages.map(item => logger.info(item))
 
-        if (!mongoose.isValidObjectId(heroId)) {
-            logger.error('Invalid hero id')
-            return res.status(400).json({ message: 'Invalid hero id' })
-        }
+        // const nicknameExisted = await Hero.findOne({ nickname })
+
+        // const hero = await Hero.findById(heroId).exec()
+
+        // if (!hero) {
+        //     logger.error('Hero not found')
+        //     return res.status(400).json({ message: 'Hero not found' })
+        // }
+
+        // if (!mongoose.isValidObjectId(heroId)) {
+        //     logger.error('Invalid hero id')
+        //     return res.status(400).json({ message: 'Invalid hero id' })
+        // }
         
-        if (!nickname
-            || !real_name
-            || !origin_description
-            || !superpowers
-            || !catch_phase
-            || !images
-        ) {
-            logger.error('Some field was not filled up')
-            return res.status(400).json({ message: 'All fields are required' })
-        }
+        // if (!nickname
+        //     || !real_name
+        //     || !origin_description
+        //     || !superpowers
+        //     || !catch_phase
+        //     || !images
+        // ) {
+        //     logger.error('Some field was not filled up')
+        //     return res.status(400).json({ message: 'All fields are required' })
+        // }
 
-        if (nicknameExisted && (nicknameExisted.id !== heroId)) {
-            logger.error('Try to update Hero with same nickname')
-            return res.status(400).json({ message: 'Hero with same nickname already exist' })
-        }
+        // if (nicknameExisted && (nicknameExisted.id !== heroId)) {
+        //     logger.error('Try to update Hero with same nickname')
+        //     return res.status(400).json({ message: 'Hero with same nickname already exist' })
+        // }
 
-        hero.nickname = <string>nickname
-        hero.real_name = <string>real_name
-        hero.origin_description = <string>origin_description
-        hero.superpowers = <string>superpowers
-        hero.catch_phase = <string>catch_phase
+        // hero.nickname = <string>nickname
+        // hero.real_name = <string>real_name
+        // hero.origin_description = <string>origin_description
+        // hero.superpowers = <string>superpowers
+        // hero.catch_phase = <string>catch_phase
 
-        await hero.save()
+        // await hero.save()
 
-        logger.info('Hero has been updated')
-        res.status(201).json({ message: 'Hero has been updated' })
+        // logger.info('Hero has been updated')
+        // res.status(201).json({ message: 'Hero has been updated' })
+        res.json({ heroId, nickname })
 
     } catch (error) {
         next(error)
