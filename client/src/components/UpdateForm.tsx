@@ -81,13 +81,13 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         updateHero({ formData, heroId });
 
         setSelectedPictures([])
-        // dispatch(setModal())
+        dispatch(setModal())
         reset()
-    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain]);
+    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
     // }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
 
     return (
-        <Paper elevation={3} sx={{ padding: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mb: '30px' }}>
+        <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography component="h1" variant="h5">
                 Update hero {heroData?.nickname}
             </Typography>
@@ -146,7 +146,7 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 />
 
                 {imageLinksRemain
-                    && <Box sx={{  position: 'relative', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' } }}>
+                    && <Box sx={{  position: 'relative', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' }, my: '30' }}>
                         {imageLinksRemain.map((image, index) => (
                             <Box key={index} sx={{ position: 'relative', width: '150px', height: '90px', borderRadius: '4px', overflow: 'hidden' }}>
                                 <CardMedia
@@ -160,7 +160,7 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                                     onClick={() => handleDeleteExistingPicture(index)}
                                     sx={{ position: 'absolute', top: 0, right: 0 }}
                                 >
-                                    <CancelIcon />
+                                    <CancelIcon sx={{ color: '#ff0000b0'}}/>
                                 </IconButton>
                             </Box>
                         ))}

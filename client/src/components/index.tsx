@@ -17,17 +17,13 @@ import { PaginationControlled } from './Pagination'
 import { UpdateForm } from './UpdateForm'
 
 // UI
-// import { ColorModeButton } from './UI/ColorModeButton';
 import { Logo } from "./UI/Logo";
-// import { CheckBox } from "./UI/CheckBox";
-// import { TaskTitle } from "./Task/Title";
 import { EditButton } from "./UI/EditButton"
 import { Input } from "./UI/Input";
 import { SubmitButton } from './UI/SubmitButton';
 import { FileUploader } from './UI/FileUploader'
 import { Spinner } from './UI/Spinner'
 import { DeleteButton } from "./UI/DeleteButton";
-// import { MouseOverPopover } from './UI/Popover'
 
 export {
     // Layout
@@ -49,15 +45,11 @@ export {
     UpdateForm,
     
     // UI
-    // ColorModeButton,
     Logo,
-    // CheckBox,
-    // TaskTitle,
     Input,
     FileUploader,
     SubmitButton,
     Spinner,
     DeleteButton,
     EditButton
-    // MouseOverPopover,
 }

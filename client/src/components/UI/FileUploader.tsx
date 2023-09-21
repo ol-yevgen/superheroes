@@ -55,9 +55,8 @@ export const FileUploader = ({ selectedPictures, setSelectedPictures, control }:
                 <Controller
                     control={control}
                     name={'images'}
-                    // rules={{ required: 'Required file' }}
                     render={({ field: { value, onChange, ...field } }) => {
-                        const isImage = selectedPictures.length < 1 ? '' : value as string
+                        // const isImage = selectedPictures.length < 1 ? '' : value as string
                         return (
                             <input
                                 {...field}
@@ -94,7 +93,7 @@ export const FileUploader = ({ selectedPictures, setSelectedPictures, control }:
                                     onClick={() => handleCancelPicture(index)}
                                     sx={{ position: 'absolute', top: 0, right: 0 }}
                                 >
-                                    <CancelIcon />
+                                    <CancelIcon sx={{ color: '#ff0000b0'}}/>
                                 </IconButton>
                             </Box>
                         ))}

@@ -3,9 +3,8 @@ import Hero from '../models/hero.model.js'
 import mongoose from 'mongoose'
 import logger from '../utils/logger.js'
 import { UserIdRequest, UpdateHeroParams, HeroBody, IImagesLinksList } from '../types/Types.js'
-import fs from 'fs'
-import { __dirname } from '../app.js'
 import { urlList } from '../utils/createImageUrl.js'
+import { deleteFiles } from '../utils/deleteFiles.js'
 // import createHttpError from 'http-errors'
 
 interface IAllHeroesShortType {
@@ -32,8 +31,8 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
 
         const allHeroesShort: IAllHeroesShortType[] = []
         heroes.map(hero => {
-            const heroId = hero._id 
-            allHeroesShort.push({ id: heroId, nickname: hero.nickname, image: hero.images[0].link})
+            const heroId = hero._id
+            allHeroesShort.push({ id: heroId, nickname: hero.nickname, image: hero.images[0].link })
         })
 
         logger.info('All heroes list download')
@@ -48,7 +47,7 @@ export const getHero: RequestHandler = async (req: Request, res: Response, next:
 
     try {
         if (!mongoose.isValidObjectId(heroId)) {
-            
+
             logger.error('Invalid hero id')
             return res.status(400).json({ message: 'Invalid hero id' })
         }
@@ -103,59 +102,61 @@ export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
 }
 
 export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unknown> = async (req, res, next) => {
-// export const updateHero = async (req: Request, res: Response, next: NextFunction) => {
-    try {
 
-        // const files = req.files
+    try {
         const heroId = req.params.heroId
         const { nickname,
-            // real_name,
-            // origin_description,
-            // superpowers,
-            // catch_phase,
+            real_name,
+            origin_description,
+            superpowers,
+            catch_phase,
             images_remain
         } = req.body
 
+        const fileList = req.files as Express.Multer.File[]
         const listOfRemainImages = JSON.parse(images_remain) as IImagesLinksList[]
-        listOfRemainImages.map(item => logger.info(item))
+        const listOdNewImages = urlList(fileList)
 
-        // const nicknameExisted = await Hero.findOne({ nickname })
+        const updatedImageList = [...listOfRemainImages, ...listOdNewImages]
 
-        // const hero = await Hero.findById(heroId).exec()
+        const nicknameExisted = await Hero.findOne({ nickname })
 
-        // if (!hero) {
-        //     logger.error('Hero not found')
-        //     return res.status(400).json({ message: 'Hero not found' })
-        // }
+        if (!mongoose.isValidObjectId(heroId)) {
+            logger.error('Invalid hero id')
+            return res.status(400).json({ message: 'Invalid hero id' })
+        }
 
-        // if (!mongoose.isValidObjectId(heroId)) {
-        //     logger.error('Invalid hero id')
-        //     return res.status(400).json({ message: 'Invalid hero id' })
-        // }
-        
-        // if (!nickname
-        //     || !real_name
-        //     || !origin_description
-        //     || !superpowers
-        //     || !catch_phase
-        //     || !images
-        // ) {
-        //     logger.error('Some field was not filled up')
-        //     return res.status(400).json({ message: 'All fields are required' })
-        // }
+        const hero = await Hero.findById(heroId).exec()
 
-        // if (nicknameExisted && (nicknameExisted.id !== heroId)) {
-        //     logger.error('Try to update Hero with same nickname')
-        //     return res.status(400).json({ message: 'Hero with same nickname already exist' })
-        // }
+        if (!hero) {
+            logger.error('Hero not found')
+            return res.status(400).json({ message: 'Hero not found' })
+        }
 
-        // hero.nickname = <string>nickname
-        // hero.real_name = <string>real_name
-        // hero.origin_description = <string>origin_description
-        // hero.superpowers = <string>superpowers
-        // hero.catch_phase = <string>catch_phase
+        if (!nickname
+            || !real_name
+            || !origin_description
+            || !superpowers
+            || !catch_phase
+        ) {
+            logger.error('Some field was not filled up')
+            return res.status(400).json({ message: 'All fields are required' })
+        }
 
-        // await hero.save()
+        if (nicknameExisted && (nicknameExisted.id !== heroId)) {
+            logger.error('Hero with same nickname already exist')
+            return res.status(400).json({ message: 'Hero with same nickname already exist' })
+        }
+
+        hero.nickname = nickname
+        hero.real_name = real_name
+        hero.origin_description = origin_description
+        hero.superpowers = superpowers
+        hero.catch_phase = catch_phase
+        hero.images = updatedImageList
+
+        // logger.info(hero.images)
+        await hero.save()
 
         // logger.info('Hero has been updated')
         // res.status(201).json({ message: 'Hero has been updated' })
@@ -183,21 +184,12 @@ export const deleteHero: RequestHandler = async (req: Request, res: Response, ne
             return res.status(404).json({ message: 'Hero not found' })
         }
 
-        hero.images.forEach(item => {
-            const imagePath = item.link?.replace('http://localhost:4000/src', __dirname) as string
-            fs.unlink(imagePath, (err) => {
-                if (err) {
-                    logger.info(err)
-                } else {
-                    logger.info(`File ${imagePath} has been deleted`)
-                }
-            })
-        })
+        deleteFiles(hero.images)
 
         await hero.deleteOne()
 
         logger.info('Hero has been deleted')
-        res.status(201).json({id: heroId, message: 'Hero has been deleted' })
+        res.status(201).json({ id: heroId, message: 'Hero has been deleted' })
     } catch (error) {
         next(error)
     }
