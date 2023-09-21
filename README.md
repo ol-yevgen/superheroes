@@ -8,4 +8,4 @@ To run the application, do the following:
       -npm install
       -npm run start
 
-Files .env with protected information did not existing in .gitignore to have posibility check and test application
+
