@@ -3,7 +3,6 @@ import { Header } from "./Layout/Heder";
 import { Footer } from './Layout/Footer'
 
 // Navigation
-import { UserMenu } from "./Navigation/UserMenu";
 import { Navigation } from './Navigation/Navigation';
 import { MobileNav } from './Navigation/MobileNav'
 import { MainNav } from './Navigation/MainNav'
@@ -15,7 +14,7 @@ import { HeroCard } from "./HeroCard";
 import { PaginationSwiper } from './Swiper'
 import { TransitionsModal } from './TransitionsModal'
 import { PaginationControlled } from './Pagination'
-import { CreateUpdateForm } from './CreateUpdateForm'
+import { UpdateForm } from './UpdateForm'
 
 // UI
 // import { ColorModeButton } from './UI/ColorModeButton';
@@ -36,7 +35,6 @@ export {
     Footer,
 
     // Navigation
-    UserMenu,
     MainNav,
     Navigation,
     MobileNav,
@@ -48,8 +46,8 @@ export {
     PaginationSwiper,
     TransitionsModal,
     PaginationControlled,
-    CreateUpdateForm,
-
+    UpdateForm,
+    
     // UI
     // ColorModeButton,
     Logo,

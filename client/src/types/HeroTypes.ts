@@ -26,8 +26,7 @@ export interface IHeroesResponseTypes {
 }
 
 export interface ICreateUpdateFormPropsTypes {
-    // heroData: IHeroFullInfoTypes | null,
-    heroData: any,
+    heroData: IHeroFullInfoTypes | null | undefined,
 }
 
 export interface ITransitionModal {

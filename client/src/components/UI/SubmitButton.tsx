@@ -4,11 +4,11 @@ import { FC } from "react"
 interface SubmitButtonType {
     label: string,
     onHandleSubmit: any,
-    isValid: boolean
+    isValid: boolean,
 }
 
 export const SubmitButton: FC<SubmitButtonType> = ({ label, onHandleSubmit, isValid }) => {
-    
+
     return (
         <Button
             type="submit"

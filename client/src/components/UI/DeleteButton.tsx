@@ -14,8 +14,8 @@ export const DeleteButton = () => {
     const [ deleteHero, {data}] = useDeleteHeroMutation( )
     const navigate = useNavigate()
 
-    const onDeleteHero = useCallback(() => {
-        deleteHero(heroId)
+    const onDeleteHero = useCallback(async () => {
+        await deleteHero(heroId)
         navigate('/heroes')
     }, [heroId, navigate, deleteHero])
 

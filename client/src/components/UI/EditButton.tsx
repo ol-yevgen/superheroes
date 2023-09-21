@@ -9,8 +9,6 @@ interface IEditButtonProps {
 }
 
 export const EditButton = ( ) => {
-    const [updateHero, { isError, isSuccess }] = useUpdateHeroMutation()
-
     const dispatch = useAppDispatch()
 
     const openModal = () => {

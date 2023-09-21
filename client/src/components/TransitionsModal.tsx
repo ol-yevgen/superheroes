@@ -2,19 +2,7 @@ import { Modal, Backdrop, Box, CardMedia } from '@mui/material';
 import { setModal } from 'redux/features/modalSlice';
 import { useAppDispatch } from 'redux/store';
 import { ITransitionModal } from 'types/HeroTypes';
-import { CreateUpdateForm } from './CreateUpdateForm';
-
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '70%',
-    height: '90%',
-    bgcolor: 'background.paper',
-    outline: 'none',
-    overflowY: 'scroll'
-};
+import { UpdateForm } from 'components/index';
 
 export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
     const dispatch = useAppDispatch()
@@ -39,7 +27,17 @@ export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransi
             }}
             sx={{ cursor: 'pointer', }}
         >
-            <Box sx={style}>
+            <Box sx={{
+                position: 'absolute' as 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '70%',
+                height: image ? 'auto' : '90%',
+                bgcolor: 'background.paper',
+                outline: 'none',
+                overflow: image ? 'hidden' : 'scroll'
+            }}>
                 {image
                     ? <CardMedia
                         component='img'
@@ -48,10 +46,10 @@ export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransi
                         image={image}
                         alt={image}
                     />
-                    : < CreateUpdateForm heroData={data} /> 
-                    
+                    : < UpdateForm heroData={data} />
                 }
             </Box>
+
         </Modal>
     );
 }

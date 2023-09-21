@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { heroesApi } from './api/heroesApi';
 import heroesReducer from './features/heroesSlice';
 import modalSlice from './features/modalSlice'
+// import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 export const store = configureStore({
     reducer: {
@@ -17,6 +18,8 @@ export const store = configureStore({
         // userProfileApi.middleware,
     ]),
 })
+
+// setupListeners(store.dispatch)
 
 export type TRootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

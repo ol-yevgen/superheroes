@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { FormEvent, useCallback, useState } from "react"
 import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
 import { heroSchema } from 'schemas/heroSchema'
-import { useCreateHeroMutation } from 'redux/api/heroesApi';
+import { useUpdateHeroMutation } from 'redux/api/heroesApi';
 
-export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => {
+export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     // export const CreateUpdateForm = () => {
-    const [createHero, { isError, isSuccess, data }] = useCreateHeroMutation()
+    const [updateHero, { isError, isSuccess}] = useUpdateHeroMutation()
 
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
     const navigate = useNavigate()
@@ -31,14 +31,14 @@ export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => 
                 superpowers: heroData?.superpowers,
                 catch_phase: heroData?.catch_phase,
                 origin_description: heroData?.origin_description,
-                images: heroData?.images as IImageListResponseTypes[]
+                images: []
             },
             mode: "onChange",
             resolver: yupResolver(heroSchema)
         }
     )
 
-    const onHandleCreateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
+    const onHandleUpdateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const { nickname, real_name, superpowers, catch_phase, origin_description } = getValues()
         const formData = new FormData();
@@ -52,15 +52,15 @@ export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => 
             formData.append('images', file as File);
         }
 
-        createHero(formData)
+        updateHero(formData);
 
         setSelectedPictures([])
         reset()
         navigate(`/heroes`)
-    }, [createHero, getValues, navigate, reset, selectedPictures]);
+    }, [updateHero, getValues, navigate, reset, selectedPictures]);
 
     return (
-        <Paper elevation={3} sx={{padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' ,}}>
+        <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
             <Typography component="h1" variant="h5">
                 {heroData ? 'Update hero' : 'Create new hero'}
             </Typography>
@@ -68,9 +68,9 @@ export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => 
                 component='form'
                 autoComplete='off'
                 maxWidth='md'
-                sx={{ width: '100%', marginTop: '1rem',  }}
+                sx={{ width: '100%', marginTop: '1rem', }}
             >
-                <Box sx={{ display: { xs: 'block', sm: 'flex' }, gap: '30px', borderRadius: '10px'}}>
+                <Box sx={{ display: { xs: 'block', sm: 'flex' }, gap: '30px', borderRadius: '10px' }}>
                     <Input
                         label='Nickname'
                         name='nickname'
@@ -115,19 +115,19 @@ export const CreateUpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes ) => 
                     maxRows={5}
                 />
 
-                <FileUploader
+                {/* <FileUploader
                     isSuccess={isSuccess}
                     isError={isError}
                     imagesList={heroData?.images}
                     selectedPictures={selectedPictures}
                     setSelectedPictures={setSelectedPictures}
-                />
-
+                /> */}
+{/* 
                 <SubmitButton
                     label={heroData ? 'Update hero' : 'Create hero'}
-                    onHandleSubmit={onHandleCreateSubmit}
+                    onHandleSubmit={onHandleUpdateSubmit}
                     isValid={isValid}
-                />
+                /> */}
             </Box>
         </Paper>
     );
