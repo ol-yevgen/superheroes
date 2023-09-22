@@ -1,5 +1,5 @@
 import { FC, useState } from "react"
-import { Spinner, HeroCard, PaginationControlled } from "../components/index"
+import { Spinner, HeroCard, PaginationControlled } from "components/index"
 import { Box, Card, Grid, Typography } from "@mui/material"
 import { useGetHeroesQuery } from "redux/api/heroesApi"
 import { IHeroShortTypes } from "types/HeroTypes"
@@ -7,12 +7,10 @@ import { IHeroShortTypes } from "types/HeroTypes"
 export const HeroesPage: FC = () => {
 
     const [page, setPage] = useState(1);
-
     const { data, isLoading } = useGetHeroesQuery(page)
 
     const heroes = data?.allHeroesShort as IHeroShortTypes[]
     const totalPages = data?.totalPages as number
-
 
     if (isLoading) return <Spinner />
 

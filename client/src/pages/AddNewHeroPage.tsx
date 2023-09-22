@@ -1,5 +1,5 @@
-import { Typography, Paper, Box, Button } from '@mui/material';
-import { Input, SubmitButton, FileUploader } from "components/index";
+import { Typography, Paper, Box } from '@mui/material';
+import { Input, SubmitButton, FileUploader,} from "components/index";
 import {  useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
@@ -129,8 +129,6 @@ export const AddNewHeroPage = () => {
                     selectedPictures={selectedPictures}
                     setSelectedPictures={setSelectedPictures}
                 />
-
-                {/* <Button onClick={() => console.log(getValues(), selectedPictures)}>Get data</Button> */}
 
                 <SubmitButton
                     label={'Create hero'}

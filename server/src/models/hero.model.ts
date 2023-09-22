@@ -7,7 +7,6 @@ const heroSchema = new Schema({
     superpowers: { type: String, required: true },
     catch_phase: { type: String, required: true },
     images: [{ link: String }]
-    // owner: { type: Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true })
 
 type Hero = InferSchemaType<typeof heroSchema>;

@@ -1,8 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import { Controller, Control, FieldErrors } from 'react-hook-form';
-import { Box, Button, CardMedia, IconButton } from '@mui/material';
-
-import { Cancel as CancelIcon } from '@mui/icons-material';
+import { Controller, Control } from 'react-hook-form';
+import { Box, Button } from '@mui/material';
+import { FormImagesList } from 'components/index';
 
 export interface IFormData {
     nickname: string,
@@ -75,29 +74,10 @@ export const FileUploader = ({ selectedPictures, setSelectedPictures, control }:
                             />
                         );
                     }}
-
                 />
 
-                {selectedPictures
-                    && <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' } }}>
-                        {selectedPictures.map((file, index) => (
-                            <Box key={index} sx={{ position: 'relative', width: '150px', height: '90px', borderRadius: '4px', overflow: 'hidden' }}>
-                                <CardMedia
-                                    component='img'
-                                    height='100%'
-                                    image={URL.createObjectURL(file)}
-                                    alt={`Selected ${index + 1}`}
-                                    sx={{ width: '100%', objectFit: 'cover' }}
-                                />
-                                <IconButton
-                                    onClick={() => handleCancelPicture(index)}
-                                    sx={{ position: 'absolute', top: 0, right: 0 }}
-                                >
-                                    <CancelIcon sx={{ color: '#ff0000b0'}}/>
-                                </IconButton>
-                            </Box>
-                        ))}
-                    </Box>}
+                <FormImagesList imagesList={selectedPictures} cancelButton={handleCancelPicture} />
+
             </Box>
         </>
     )

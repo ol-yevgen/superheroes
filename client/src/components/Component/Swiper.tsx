@@ -7,7 +7,7 @@ import { setModal } from 'redux/features/modalSlice'
 import { useAppDispatch } from 'redux/store';
 
 interface ISwiperPropsTypes {
-    imagesList: IImageListResponseTypes[] | [] | undefined,
+    imagesList: IImageListResponseTypes[] | [] ,
     handleOpenClose: (link: string) => void
 }
 
@@ -25,7 +25,7 @@ export const PaginationSwiper = ({ imagesList, handleOpenClose }: ISwiperPropsTy
             <Swiper
                 slidesPerView={3}
                 spaceBetween={30}
-                loop={true}
+                loop={imagesList.length > 7 ? true : false}
             >
                 {swiperList.map((image: IImageListResponseTypes) => {
                     return (

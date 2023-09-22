@@ -1,10 +1,8 @@
 import * as mongoose from 'mongoose'
 import logger from '../utils/logger.js';
-// import config from './validateEnv.js'
 
 async function connectToBd() {
     try {
-        // await mongoose.connect(config.MONGO_URI), {
         await mongoose.connect(<string>process.env.MONGO_URI), {
             useNewURLParser: true,
             useUnifiedTopology: true,

@@ -1,4 +1,4 @@
-import {CardContent, CardMedia, CardActionArea, Typography }  from '@mui/material';
+import {CardContent, CardMedia, CardActionArea, Typography, Box }  from '@mui/material';
 import { Link } from 'react-router-dom';
 import { IHeroShortTypes } from 'types/HeroTypes';
 
@@ -10,13 +10,21 @@ export const HeroCard = ({ heroData }: IHeroDataTypes) => {
     return (
         <CardActionArea>
             <Link to={`${heroData.id}`}>
-                <CardMedia
-                    component="img"
-                    height="200"
-                    image={heroData.image}
-                    alt="green iguana"
-                />
-                <CardContent>
+                <Box sx={{ overflow: 'hidden'}}>
+                    <CardMedia
+                        component="img"
+                        height="200"
+                        image={heroData.image}
+                        alt="green iguana"
+                        sx={{
+                            maxHeight: '200px', transition: '.8s',
+                            '&:hover': {
+                                scale: '1.1',
+                            }
+                        }}
+                    />
+                </Box>
+                <CardContent >
                     <Typography
                         gutterBottom
                         fontSize="22px"

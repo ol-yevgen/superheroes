@@ -1,13 +1,12 @@
-import { Typography, Paper, Box, Button, CardMedia, IconButton } from '@mui/material';
-import { Input, SubmitButton, FileUploader } from "components/index";
+import { Typography, Paper, Box } from '@mui/material';
+import { Input, SubmitButton, FileUploader, FormImagesList } from "components/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroUpdateSchema } from 'schemas/heroSchema'
 import { useUpdateHeroMutation } from 'redux/api/heroesApi';
 import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
-import { Cancel as CancelIcon } from '@mui/icons-material';
 import { useAppDispatch } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
 
@@ -15,12 +14,11 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     const heroId = useParams().id as string
     const dispatch = useAppDispatch()
 
-    const [updateHero, { isError, isSuccess, error, data}] = useUpdateHeroMutation()
+    const [updateHero, { isError, isSuccess, error, data }] = useUpdateHeroMutation()
     const [imageListToDelete, setImageListToDelete] = useState<IImageListResponseTypes[]>([]);
     const [imageLinksRemain, setImageLinksRemain] = useState<IImageListResponseTypes[]>(heroData?.images)
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
-
-    // console.log(JSON.stringify(data));
+    const [errorMessage, setErrorMessage] = useState<boolean>(false)
 
     const {
         control,
@@ -40,24 +38,30 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 superpowers: heroData?.superpowers,
                 catch_phase: heroData?.catch_phase,
                 origin_description: heroData?.origin_description,
-                images: [] ,
+                images: [],
                 images_remain: [] as IImageListResponseTypes[],
             },
             mode: "onChange",
             resolver: yupResolver(heroUpdateSchema)
         }
-        )
+    )
 
     useEffect(() => {
         if (selectedPictures.length === 0) {
             resetField('images')
         }
     }, [resetField, selectedPictures])
-   
+
+    useEffect(() => {
+        if (selectedPictures.length === 0 && imageLinksRemain.length === 0) {
+            setErrorMessage(true)
+        } else {
+            setErrorMessage(false)
+        }
+    }, [selectedPictures, imageLinksRemain])
+
     const handleDeleteExistingPicture = async (index: number) => {
-
         setImageListToDelete([...imageListToDelete, imageLinksRemain[index]]);
-
         setImageLinksRemain((prevRemainImage) =>
             prevRemainImage.filter((_, i) => i !== index)
         );
@@ -67,29 +71,35 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         event.preventDefault()
         const { nickname, real_name, superpowers, catch_phase, origin_description } = getValues()
         const formData = new FormData();
+
         formData.set('nickname', nickname as string)
         formData.set('real_name', real_name as string)
         formData.set('superpowers', superpowers as string)
         formData.set('catch_phase', catch_phase as string)
         formData.set('origin_description', origin_description as string)
+        formData.append('images_remain', JSON.stringify(imageLinksRemain));
+        formData.append('images_deleted', JSON.stringify(imageListToDelete));
 
         for (const file of selectedPictures) {
             formData.append('images', file as File);
         }
-        formData.append('images_remain', JSON.stringify(imageLinksRemain));
-        
-        updateHero({ formData, heroId });
 
-        setSelectedPictures([])
-        dispatch(setModal())
-        reset()
-    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
-    // }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
+        if (selectedPictures.length !== 0 || imageLinksRemain.length !== 0) {
+            updateHero({ formData, heroId });
+            setSelectedPictures([])
+            dispatch(setModal())
+            reset()
+        }
+
+    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, imageListToDelete, dispatch]);
 
     return (
-        <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography component="h1" variant="h5">
-                Update hero {heroData?.nickname}
+        <Paper elevation={3} sx={{ minHeight: '100%',  padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography component="h1" variant='h6' >
+                Update hero
+                <Box component='span' fontWeight='bold' ml='10px' fontFamily='monospace'>
+                    {heroData?.nickname}
+                </Box>
             </Typography>
             {isError && <Box component='span'>Error</Box>}
             <Box
@@ -145,32 +155,18 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                     maxRows={5}
                 />
 
-                {imageLinksRemain
-                    && <Box sx={{  position: 'relative', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' }, my: '30' }}>
-                        {imageLinksRemain.map((image, index) => (
-                            <Box key={index} sx={{ position: 'relative', width: '150px', height: '90px', borderRadius: '4px', overflow: 'hidden' }}>
-                                <CardMedia
-                                    component='img'
-                                    height='100%'
-                                    image={image.link}
-                                    alt={`Selected ${index + 1}`}
-                                    sx={{ width: '100%', objectFit: 'cover' }}
-                                />
-                                <IconButton
-                                    onClick={() => handleDeleteExistingPicture(index)}
-                                    sx={{ position: 'absolute', top: 0, right: 0 }}
-                                >
-                                    <CancelIcon sx={{ color: '#ff0000b0'}}/>
-                                </IconButton>
-                            </Box>
-                        ))}
-                    </Box>}
+                <FormImagesList imagesList={imageLinksRemain} cancelButton={handleDeleteExistingPicture} />
 
                 <FileUploader
                     control={control}
                     selectedPictures={selectedPictures}
                     setSelectedPictures={setSelectedPictures}
                 />
+
+                {errorMessage &&
+                    <Typography component="span" sx={{color: 'red'}}>
+                        Please, choose at least one picture
+                    </Typography>}
 
                 <SubmitButton
                     label={'Update hero'}
@@ -181,3 +177,5 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         </Paper>
     );
 }
+
+

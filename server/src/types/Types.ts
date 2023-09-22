@@ -31,4 +31,5 @@ export interface HeroBody {
     catch_phase?: string,
     images: File[],
     images_remain: string,
+    images_deleted: string,
 }

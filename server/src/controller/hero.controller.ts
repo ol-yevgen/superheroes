@@ -5,7 +5,6 @@ import logger from '../utils/logger.js'
 import { UserIdRequest, UpdateHeroParams, HeroBody, IImagesLinksList } from '../types/Types.js'
 import { urlList } from '../utils/createImageUrl.js'
 import { deleteFiles } from '../utils/deleteFiles.js'
-// import createHttpError from 'http-errors'
 
 interface IAllHeroesShortType {
     id: mongoose.Types.ObjectId,
@@ -14,14 +13,12 @@ interface IAllHeroesShortType {
 }
 
 const OFFSET_LIMIT = +(process.env.OFFSET_LIMIT as string) as number
-// const BASE_API = process.env.BASE_API_URL as string
 
 export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Response, next: NextFunction) => {
     try {
         const page = req.query.page || 1
         const offset = (+page - 1) * OFFSET_LIMIT
 
-        // const heroes = await Hero.find({ owner: req.userId }).exec()
         const totalPages = Math.ceil(await Hero.find().count().exec() / 5)
         const heroes = await Hero.find().sort({ createdAt: -1 }).skip(offset).limit(OFFSET_LIMIT).exec()
 
@@ -110,11 +107,13 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             origin_description,
             superpowers,
             catch_phase,
-            images_remain
+            images_remain,
+            images_deleted
         } = req.body
 
         const fileList = req.files as Express.Multer.File[]
         const listOfRemainImages = JSON.parse(images_remain) as IImagesLinksList[]
+        const listOfDeletedImages = JSON.parse(images_deleted) as IImagesLinksList[]
         const listOdNewImages = urlList(fileList)
 
         const updatedImageList = [...listOfRemainImages, ...listOdNewImages]
@@ -154,13 +153,13 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
         hero.superpowers = superpowers
         hero.catch_phase = catch_phase
         hero.images = updatedImageList
-
-        // logger.info(hero.images)
+        
         await hero.save()
 
-        // logger.info('Hero has been updated')
-        // res.status(201).json({ message: 'Hero has been updated' })
-        res.json({ heroId, nickname })
+        deleteFiles(listOfDeletedImages)
+
+        res.status(201).json({ message: 'Hero has been updated' })
+        logger.info('Hero has been updated')
 
     } catch (error) {
         next(error)

@@ -7,14 +7,13 @@ import { Navigation } from './Navigation/Navigation';
 import { MobileNav } from './Navigation/MobileNav'
 import { MainNav } from './Navigation/MainNav'
 
-// Hero
-import { HeroCard } from "./HeroCard";
-
 //Components
-import { PaginationSwiper } from './Swiper'
-import { TransitionsModal } from './TransitionsModal'
-import { PaginationControlled } from './Pagination'
-import { UpdateForm } from './UpdateForm'
+import { PaginationSwiper } from './Component/Swiper'
+import { TransitionsModal } from './Component/TransitionsModal'
+import { PaginationControlled } from './Component/Pagination'
+import { HeroCard } from "./Component/HeroCard";
+import { UpdateForm } from './Component/UpdateForm'
+import { FormImagesList } from './Component/FormImagesList'
 
 // UI
 import { Logo } from "./UI/Logo";
@@ -43,6 +42,7 @@ export {
     TransitionsModal,
     PaginationControlled,
     UpdateForm,
+    FormImagesList,
     
     // UI
     Logo,
