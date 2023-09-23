@@ -1,7 +1,7 @@
 import { AppBar, Box, Toolbar, Container } from '@mui/material'
 import { Logo, MainNav, MobileNav } from '../index'
 
-export const Header = () => {
+const Header = () => {
 
     return (
         <AppBar position="static" sx={{ bgcolor: 'background.paper', color: 'text.primary' }}>
@@ -21,3 +21,5 @@ export const Header = () => {
         </AppBar>
     );
 }
+
+export default Header

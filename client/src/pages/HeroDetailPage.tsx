@@ -1,9 +1,9 @@
-import { Spinner, PaginationSwiper, TransitionsModal, EditButton, DeleteButton } from 'components';
+import { Spinner, TransitionsModal, PaginationSwiper, EditButton, DeleteButton } from 'components';
 import { Typography, Box, CardMedia } from '@mui/material';
 import { useGetHeroQuery } from 'redux/api/heroesApi';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from 'redux/store';
-import { FC, useState } from 'react';
+import { FC, useState} from 'react';
 
 export const HeroDetailPage: FC = () => {
     const heroId = useParams().id as string
@@ -79,8 +79,3 @@ export const HeroDetailPage: FC = () => {
         </Box>
     )
 }
-
-
-
-
-

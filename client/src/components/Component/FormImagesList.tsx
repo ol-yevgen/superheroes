@@ -7,7 +7,7 @@ interface IFormImagesListPropsTypes {
     cancelButton: ((index: number) => Promise<void>) | ((index: number) => void)
 }
 
-export const FormImagesList = ({ imagesList, cancelButton }: IFormImagesListPropsTypes) => {
+const FormImagesList = ({ imagesList, cancelButton }: IFormImagesListPropsTypes) => {
 
     return (
         <>
@@ -37,3 +37,5 @@ export const FormImagesList = ({ imagesList, cancelButton }: IFormImagesListProp
         </>
     );
 }
+
+export default FormImagesList

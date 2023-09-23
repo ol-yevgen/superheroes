@@ -10,7 +10,7 @@ import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/Hero
 import { useAppDispatch } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
 
-export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
+const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     const heroId = useParams().id as string
     const dispatch = useAppDispatch()
 
@@ -178,4 +178,4 @@ export const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     );
 }
 
-
+export default UpdateForm

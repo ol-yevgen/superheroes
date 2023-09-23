@@ -26,7 +26,7 @@ interface NavigationType {
     handleCloseNavMenu: () => void,
 }
 
-export const Navigation = ({ handleCloseNavMenu }: NavigationType) => {
+const Navigation = ({ handleCloseNavMenu }: NavigationType) => {
 
     return (
         <>
@@ -45,3 +45,5 @@ export const Navigation = ({ handleCloseNavMenu }: NavigationType) => {
         
     );
 }
+
+export default Navigation

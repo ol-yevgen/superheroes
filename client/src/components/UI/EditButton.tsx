@@ -20,3 +20,5 @@ export const EditButton = ( ) => {
 
     )
 }
+
+export default EditButton

@@ -13,7 +13,7 @@ import path from 'path'
 import 'dotenv/config'
 
 const __filename = fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename);
+export const __dirname = path.dirname(__filename).slice(0, -3);
 
 const PORT = process.env.PORT || 5050
 const BASE_FRONTEND_URL = process.env.BASE_FRONTEND_URL as string
@@ -29,7 +29,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.json())
-app.use('/src/uploads',express.static((__dirname + '/uploads')));
+app.use('/uploads/', express.static((__dirname + 'uploads/' )));
 app.use(router)
 app.use(errorHandler)
 

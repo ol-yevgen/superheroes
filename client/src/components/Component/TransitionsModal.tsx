@@ -4,7 +4,7 @@ import { useAppDispatch } from 'redux/store';
 import { ITransitionModal } from 'types/HeroTypes';
 import { UpdateForm } from 'components/index';
 
-export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
+const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
     const dispatch = useAppDispatch()
 
     const closeModal = (link: string) => {
@@ -53,3 +53,5 @@ export const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransi
         </Modal>
     );
 }
+
+export default TransitionsModal

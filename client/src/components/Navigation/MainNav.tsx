@@ -2,7 +2,7 @@ import { Navigation } from '../index'
 import { Box, IconButton, Avatar, Tooltip } from '@mui/material'
 import { useState } from 'react';
 
-export const MainNav = () => {
+const MainNav = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorElUser);
 
@@ -38,3 +38,5 @@ export const MainNav = () => {
 
     );
 }
+
+export default MainNav

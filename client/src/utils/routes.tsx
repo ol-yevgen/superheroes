@@ -1,7 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { HeroesPage } from 'pages/HeroesPage'
-import { HeroDetailPage } from 'pages/HeroDetailPage'
+import {HeroDetailPage} from 'pages/HeroDetailPage'
 import { AddNewHeroPage } from 'pages/AddNewHeroPage'
+
 
 export const useRoutes = () => {
 

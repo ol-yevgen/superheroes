@@ -18,7 +18,7 @@ interface IFileUploaderPropsTypes {
     setSelectedPictures: Dispatch<SetStateAction<File[]>>,
 }
 
-export const FileUploader = ({ selectedPictures, setSelectedPictures, control }: IFileUploaderPropsTypes) => {
+const FileUploader = ({ selectedPictures, setSelectedPictures, control }: IFileUploaderPropsTypes) => {
 
     const handlePictureSelection = (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -82,3 +82,5 @@ export const FileUploader = ({ selectedPictures, setSelectedPictures, control }:
         </>
     )
 }
+
+export default FileUploader

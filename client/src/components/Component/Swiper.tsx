@@ -50,3 +50,5 @@ export const PaginationSwiper = ({ imagesList, handleOpenClose }: ISwiperPropsTy
         </>
     )
 }
+
+export default PaginationSwiper

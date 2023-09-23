@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material"
 
-export const Spinner = () => {
+const Spinner = () => {
     return (
         <Box sx={{
             display: 'flex', justifyContent: 'center',
@@ -9,3 +9,5 @@ export const Spinner = () => {
         </Box>
     )
 }
+
+export default Spinner

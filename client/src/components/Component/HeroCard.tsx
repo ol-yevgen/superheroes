@@ -6,7 +6,7 @@ interface IHeroDataTypes {
     heroData: IHeroShortTypes
 }
 
-export const HeroCard = ({ heroData }: IHeroDataTypes) => {
+const HeroCard = ({ heroData }: IHeroDataTypes) => {
     return (
         <CardActionArea>
             <Link to={`${heroData.id}`}>
@@ -42,3 +42,5 @@ export const HeroCard = ({ heroData }: IHeroDataTypes) => {
         </CardActionArea>
     );
 }
+
+export default HeroCard

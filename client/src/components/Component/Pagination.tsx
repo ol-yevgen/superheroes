@@ -7,7 +7,7 @@ interface IPaginationPropsTypes {
     setPage: (value: number) => void
 }
 
-export const PaginationControlled = ({ currentPage, totalPages, setPage }: IPaginationPropsTypes) => {
+const PaginationControlled = ({ currentPage, totalPages, setPage }: IPaginationPropsTypes) => {
 
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
@@ -19,3 +19,5 @@ export const PaginationControlled = ({ currentPage, totalPages, setPage }: IPagi
         </Stack>
     );
 }
+
+export default PaginationControlled

@@ -7,7 +7,7 @@ interface SubmitButtonType {
     isValid: boolean,
 }
 
-export const SubmitButton: FC<SubmitButtonType> = ({ label, onHandleSubmit, isValid }) => {
+const SubmitButton: FC<SubmitButtonType> = ({ label, onHandleSubmit, isValid }) => {
 
     return (
         <Button
@@ -34,3 +34,5 @@ export const SubmitButton: FC<SubmitButtonType> = ({ label, onHandleSubmit, isVa
         </Button>
     )
 }
+
+export default SubmitButton

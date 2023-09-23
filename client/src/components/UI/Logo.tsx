@@ -3,7 +3,7 @@ import { Typography } from "@mui/material"
 import { FC } from "react"
 import { Link } from "react-router-dom"
 
-export const Logo: FC = () => {
+const Logo: FC = () => {
 
     return (
         <Link to='/heroes'>
@@ -26,3 +26,5 @@ export const Logo: FC = () => {
         </Link>
     )
 }
+
+export default Logo

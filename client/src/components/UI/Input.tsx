@@ -11,7 +11,7 @@ interface InputTypes {
     maxRows: number,
 }
 
-export const Input: FC<InputTypes> = ({ label, name, register, error, multiline, maxRows,  }) => {
+const Input: FC<InputTypes> = ({ label, name, register, error, multiline, maxRows,  }) => {
     return (
         <TextField
             variant="outlined"
@@ -35,3 +35,5 @@ export const Input: FC<InputTypes> = ({ label, name, register, error, multiline,
         />
     )
 }
+
+export default Input

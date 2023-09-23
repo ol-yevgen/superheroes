@@ -1,7 +1,7 @@
 import { Box, Container } from "@mui/material"
 import { FC } from "react"
 
-export const Footer: FC = (props) => {
+const Footer: FC = (props) => {
     return (
         <Box component="footer" sx={
             {
@@ -22,3 +22,5 @@ export const Footer: FC = (props) => {
         </Box>
     )
 }
+
+export default Footer

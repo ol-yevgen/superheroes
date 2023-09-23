@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import { useDeleteHeroMutation } from "redux/api/heroesApi";
 
-export const DeleteButton = () => {
+const DeleteButton = () => {
     const heroId = useParams().id as string
 
     const [ deleteHero, {data}] = useDeleteHeroMutation( )
@@ -25,3 +25,5 @@ export const DeleteButton = () => {
         </IconButton>
     )
 }
+
+export default DeleteButton

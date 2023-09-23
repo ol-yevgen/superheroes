@@ -5,7 +5,7 @@ import { IImagesLinksList } from '../types/Types.js';
 
 export const deleteFiles = (urlList: IImagesLinksList[]) => {
     urlList.forEach(item => {
-        const imagePath = item.link?.replace('http://localhost:4000/src', __dirname) as string
+        const imagePath = item.link?.replace('http://localhost:4000/', __dirname) as string
         fs.unlink(imagePath, (err) => {
             if (err) {
                 logger.info(err)

@@ -3,7 +3,7 @@ import { Box, IconButton, Menu } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 
-export const MobileNav = () => {
+const MobileNav = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -50,3 +50,5 @@ export const MobileNav = () => {
 
     );
 }
+
+export default MobileNav
