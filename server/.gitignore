@@ -1,4 +1,5 @@
 /node_modules
+/uploads/gitignore.js
 
 build
 .DS_Store
