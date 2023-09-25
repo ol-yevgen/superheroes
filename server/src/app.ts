@@ -13,7 +13,7 @@ import path from 'path'
 import 'dotenv/config'
 
 const __filename = fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename).slice(0, -3);
+export const __dirname = path.dirname(__filename).slice(0, -4);
 
 const PORT = process.env.PORT || 5050
 const BASE_FRONTEND_URL = process.env.BASE_FRONTEND_URL as string

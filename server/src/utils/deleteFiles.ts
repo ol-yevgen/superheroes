@@ -10,7 +10,7 @@ export const deleteFiles = (urlList: IImagesLinksList[]) => {
             if (err) {
                 logger.info(err)
             } else {
-                logger.info(`File ${imagePath} has been deleted`)
+                logger.info(`File ${imagePath.replace(__dirname, '')} has been deleted`)
             }
         })
     })
