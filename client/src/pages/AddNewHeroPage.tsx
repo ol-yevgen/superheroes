@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroCreateSchema } from 'schemas/heroSchema'
 import { useCreateHeroMutation } from 'redux/api/heroesApi';
+import { convertToBase64 } from 'utils/base64'
 
 export const AddNewHeroPage = () => {
     const [createHero, { isError, isSuccess, isLoading }] = useCreateHeroMutation()
@@ -46,18 +47,10 @@ export const AddNewHeroPage = () => {
 
     const onHandleCreateSubmit = useCallback(async (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault()
-        const { nickname, real_name, superpowers, catch_phase, origin_description } = getValues()
-
-        const formData = new FormData();
-        formData.set('nickname', nickname as string)
-        formData.set('real_name', real_name as string)
-        formData.set('superpowers', superpowers as string)
-        formData.set('catch_phase', catch_phase as string)
-        formData.set('origin_description', origin_description as string)
-
-        for (const file of selectedPictures) {
-            formData.append('images', file);
-        }
+        
+        const base64 = await convertToBase64(selectedPictures) 
+        const formData = JSON.parse(JSON.stringify(getValues()))
+        formData.images = base64
 
         await createHero(formData)
 

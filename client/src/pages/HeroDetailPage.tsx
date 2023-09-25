@@ -25,7 +25,7 @@ export const HeroDetailPage: FC = () => {
                     <CardMedia
                         component='img'
                         height='100%'
-                        image={data?.images[0].link}
+                        image={data?.images[0].image as string}
                         alt={data?.nickname}
                     />
                 </Box>
@@ -75,7 +75,8 @@ export const HeroDetailPage: FC = () => {
                 open={modalStatus}
                 image={link}
                 data={data}
-                handleOpenClose={handleOpenClose} />
+                handleOpenClose={handleOpenClose}
+            />
         </Box>
     )
 }

@@ -14,7 +14,7 @@ export const heroesApi = createApi({
         baseUrl: BASE_URL + 'api/',
     }),
     tagTypes: ['Heroes', 'Hero'],
-    
+
     endpoints: (builder) => ({
 
         // GET PAGE OF HEROES
@@ -27,7 +27,7 @@ export const heroesApi = createApi({
             providesTags: ['Heroes'],
             transformResponse: (result: IHeroesResponseTypes) => result,
         }),
-        
+
         //GET ONE HERO INFO
         getHero: builder.query<IHeroFullInfoTypes, string>({
             query: (id: string) => ({
@@ -39,16 +39,18 @@ export const heroesApi = createApi({
             providesTags: ['Hero'],
             transformResponse: (result: IHeroFullInfoTypes) => result,
         }),
-        
+
         //CREATE HERO
-        createHero: builder.mutation<{}, FormData>({
-            query: (data) => ({
-                url: `/hero`,
-                credentials: 'include',
-                mode: 'cors',
-                method: 'POST',
-                body: data
-            }),
+        createHero: builder.mutation<{}, IHeroFullInfoTypes>({
+            query: (data) => {
+                return {
+                    url: `/hero`,
+                    credentials: 'include',
+                    mode: 'cors',
+                    method: 'POST',
+                    body: data
+                }
+            },
             invalidatesTags: ['Heroes'],
         }),
 
@@ -73,7 +75,7 @@ export const heroesApi = createApi({
                 method: 'DELETE',
             }),
             invalidatesTags: ['Heroes'],
-        }),     
+        }),
     }),
 });
 

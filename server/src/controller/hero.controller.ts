@@ -2,9 +2,7 @@ import { NextFunction, Request, Response, RequestHandler } from 'express'
 import Hero from '../models/hero.model.js'
 import mongoose from 'mongoose'
 import logger from '../utils/logger.js'
-import { UserIdRequest, UpdateHeroParams, HeroBody, IImagesLinksList } from '../types/Types.js'
-import { urlList } from '../utils/createImageUrl.js'
-import { deleteFiles } from '../utils/deleteFiles.js'
+import { UserIdRequest, UpdateHeroParams, HeroBody } from '../types/Types.js'
 
 interface IAllHeroesShortType {
     id: mongoose.Types.ObjectId,
@@ -27,9 +25,10 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         }
 
         const allHeroesShort: IAllHeroesShortType[] = []
+
         heroes.map(hero => {
             const heroId = hero._id
-            allHeroesShort.push({ id: heroId, nickname: hero.nickname, image: hero.images[0].link })
+            allHeroesShort.push({ id: heroId, nickname: hero.nickname, image: hero.images[0].image  })
         })
 
         logger.info('All heroes list download')
@@ -70,13 +69,9 @@ export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             real_name,
             origin_description,
             superpowers,
-            catch_phase } = req.body
-
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ error: "No files provided" });
-        }
-
-        const fileList = req.files as Express.Multer.File[]
+            catch_phase,
+            images
+        } = req.body
 
         const newHero = new Hero({
             nickname: nickname,
@@ -84,7 +79,7 @@ export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             origin_description: origin_description,
             superpowers: superpowers,
             catch_phase: catch_phase,
-            images: urlList(fileList),
+            images: images,
         })
 
         await newHero.save()
@@ -108,16 +103,10 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             superpowers,
             catch_phase,
             images_remain,
-            images_deleted
+            images
         } = req.body
 
-        const fileList = req.files as Express.Multer.File[]
-        const listOfRemainImages = JSON.parse(images_remain) as IImagesLinksList[]
-        const listOfDeletedImages = JSON.parse(images_deleted) as IImagesLinksList[]
-        const listOdNewImages = urlList(fileList)
-
-        const updatedImageList = [...listOfRemainImages, ...listOdNewImages]
-
+        const updatedImageList = [...images_remain, ...images]
         const nicknameExisted = await Hero.findOne({ nickname })
 
         if (!mongoose.isValidObjectId(heroId)) {
@@ -137,6 +126,7 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             || !origin_description
             || !superpowers
             || !catch_phase
+            
         ) {
             logger.error('Some field was not filled up')
             return res.status(400).json({ message: 'All fields are required' })
@@ -155,8 +145,6 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
         hero.images = updatedImageList
         
         await hero.save()
-
-        deleteFiles(listOfDeletedImages)
 
         res.status(201).json({ message: 'Hero has been updated' })
         logger.info('Hero has been updated')
@@ -182,8 +170,6 @@ export const deleteHero: RequestHandler = async (req: Request, res: Response, ne
             logger.error('Hero not found')
             return res.status(404).json({ message: 'Hero not found' })
         }
-
-        deleteFiles(hero.images)
 
         await hero.deleteOne()
 

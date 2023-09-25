@@ -6,7 +6,8 @@ const heroSchema = new Schema({
     origin_description: { type: String, required: true },
     superpowers: { type: String, required: true },
     catch_phase: { type: String, required: true },
-    images: [{ link: String }]
+    images: [{ image: String }]
+    // images: [{ link: String }]
 }, { timestamps: true })
 
 type Hero = InferSchemaType<typeof heroSchema>;

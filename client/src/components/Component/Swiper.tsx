@@ -30,14 +30,14 @@ export const PaginationSwiper = ({ imagesList, handleOpenClose }: ISwiperPropsTy
                 {swiperList.map((image: IImageListResponseTypes) => {
                     return (
                         <SwiperSlide key={image._id}>
-                            <CardActionArea onClick={() => openModal(image.link)}>
+                            <CardActionArea onClick={() => openModal(image.image)}>
                                 <Box sx={{ height: '100%' }}>
                                     <CardMedia
                                         component='img'
                                         width='100%'
                                         height='200px'
-                                        image={image.link}
-                                        alt={image.link}
+                                        image={image.image}
+                                        alt={image.image}
                                     />
                                 </Box>
                             </CardActionArea>

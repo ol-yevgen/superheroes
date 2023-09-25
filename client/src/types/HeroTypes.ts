@@ -1,6 +1,11 @@
+// export interface IImageListResponseTypes {
+//     _id?: string,
+//     link: string
+// }
+
 export interface IImageListResponseTypes {
     _id?: string,
-    link: string
+    image: string
 }
 
 export interface IHeroShortTypes {
@@ -16,7 +21,7 @@ export interface IHeroFullInfoTypes {
     origin_description?: string,
     superpowers?: string,
     catch_phase?: string,
-    images?: IImageListResponseTypes[] | [] | any
+    images?: IImageListResponseTypes[] | [] | string | any
 }
 
 export interface IHeroesResponseTypes {

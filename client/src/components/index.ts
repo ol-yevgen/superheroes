@@ -12,8 +12,8 @@ export { default as PaginationSwiper} from './Component/Swiper'
 export { default as TransitionsModal } from './Component/TransitionsModal'
 export { default as PaginationControlled } from './Component/Pagination'
 export { default as HeroCard } from "./Component/HeroCard";
-export { default as UpdateForm } from './Component/UpdateForm'
 export { default as FormImagesList } from './Component/FormImagesList'
+export {default as UpdateForm} from './Component/UpdateForm'
 
 // UI
 export { default as Logo } from "./UI/Logo";

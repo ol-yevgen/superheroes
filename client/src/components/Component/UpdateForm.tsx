@@ -9,15 +9,17 @@ import { useUpdateHeroMutation } from 'redux/api/heroesApi';
 import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
 import { useAppDispatch } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
+import { convertToBase64 } from 'utils/base64';
 
 const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     const heroId = useParams().id as string
     const dispatch = useAppDispatch()
 
     const [updateHero, { isError, isSuccess, error, data }] = useUpdateHeroMutation()
-    const [imageListToDelete, setImageListToDelete] = useState<IImageListResponseTypes[]>([]);
+
     const [imageLinksRemain, setImageLinksRemain] = useState<IImageListResponseTypes[]>(heroData?.images)
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
+
     const [errorMessage, setErrorMessage] = useState<boolean>(false)
 
     const {
@@ -61,7 +63,6 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     }, [selectedPictures, imageLinksRemain])
 
     const handleDeleteExistingPicture = async (index: number) => {
-        setImageListToDelete([...imageListToDelete, imageLinksRemain[index]]);
         setImageLinksRemain((prevRemainImage) =>
             prevRemainImage.filter((_, i) => i !== index)
         );
@@ -69,20 +70,10 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
 
     const onHandleUpdateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const { nickname, real_name, superpowers, catch_phase, origin_description } = getValues()
-        const formData = new FormData();
-
-        formData.set('nickname', nickname as string)
-        formData.set('real_name', real_name as string)
-        formData.set('superpowers', superpowers as string)
-        formData.set('catch_phase', catch_phase as string)
-        formData.set('origin_description', origin_description as string)
-        formData.append('images_remain', JSON.stringify(imageLinksRemain));
-        formData.append('images_deleted', JSON.stringify(imageListToDelete));
-
-        for (const file of selectedPictures) {
-            formData.append('images', file as File);
-        }
+        const base64 = await convertToBase64(selectedPictures)
+        const formData = JSON.parse(JSON.stringify(getValues()))
+        formData.images = base64
+        formData.images_remain = imageLinksRemain
 
         if (selectedPictures.length !== 0 || imageLinksRemain.length !== 0) {
             updateHero({ formData, heroId });
@@ -91,7 +82,7 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
             reset()
         }
 
-    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, imageListToDelete, dispatch]);
+    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
 
     return (
         <Paper elevation={3} sx={{ minHeight: '100%',  padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -171,7 +162,7 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 <SubmitButton
                     label={'Update hero'}
                     onHandleSubmit={onHandleUpdateSubmit}
-                    isValid={isValid}
+                    isValid={isValid && !errorMessage}
                 />
             </Box>
         </Paper>

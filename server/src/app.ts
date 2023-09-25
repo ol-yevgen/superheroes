@@ -25,11 +25,10 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '50mb' }))
 app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.json())
-app.use('/uploads/', express.static((__dirname + '/uploads/' )));
 app.use(router)
 app.use(errorHandler)
 

@@ -1,4 +1,4 @@
-import { File } from "buffer";
+// import { File } from "buffer";
 import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 
@@ -7,7 +7,11 @@ export interface UserIdRequest extends Request {
 }
 export interface IImagesLinksList {
     _id?: string,
-    link?: string
+    image?: string
+}
+
+export interface IImagesList {
+    image: string
 }
 
 export interface HeroBodyResponse extends Response {
@@ -16,7 +20,8 @@ export interface HeroBodyResponse extends Response {
     origin_description?: string,
     superpowers?: string,
     catch_phase?: string,
-    images?: IImagesLinksList[],
+    images?: IImagesList[],
+    // images?: IImagesLinksList[],
 }
 
 export interface UpdateHeroParams extends ParamsDictionary {
@@ -29,7 +34,7 @@ export interface HeroBody {
     origin_description?: string,
     superpowers?: string,
     catch_phase?: string,
-    images: File[],
-    images_remain: string,
-    images_deleted: string,
+    // images: File[],
+    images: IImagesList[],
+    images_remain: IImagesLinksList[],
 }

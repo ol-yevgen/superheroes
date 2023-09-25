@@ -14,7 +14,7 @@ const FormImagesList = ({ imagesList, cancelButton }: IFormImagesListPropsTypes)
             {imagesList
                 && <Box sx={{ position: 'relative', display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, flexWrap: 'wrap', gap: { xs: '10px', sm: '30px' }, my: '15px'}}>
                     {imagesList.map((file, index) => {
-                        const url = (file as IImageListResponseTypes).link ? (file as IImageListResponseTypes).link : URL.createObjectURL(file as File)
+                        const url = (file as IImageListResponseTypes).image ? (file as IImageListResponseTypes).image : URL.createObjectURL(file as File)
                         return (
                             <Box key={index} sx={{ position: 'relative', width: '150px', height: '90px', borderRadius: '4px', overflow: 'hidden' }}>
                                 <CardMedia

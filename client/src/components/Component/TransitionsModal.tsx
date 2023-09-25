@@ -2,7 +2,7 @@ import { Modal, Backdrop, Box, CardMedia } from '@mui/material';
 import { setModal } from 'redux/features/modalSlice';
 import { useAppDispatch } from 'redux/store';
 import { ITransitionModal } from 'types/HeroTypes';
-import { UpdateForm } from 'components/index';
+import {UpdateForm} from 'components/index'
 
 const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
     const dispatch = useAppDispatch()
