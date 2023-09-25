@@ -1,5 +1,5 @@
 /node_modules
-/tmp/uploads/gitignore.ts
+/uploads/gitignore.ts
 
 build
 .DS_Store
