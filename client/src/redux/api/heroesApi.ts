@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IHeroFullInfoTypes, IHeroesResponseTypes } from 'types/HeroTypes';
+import { IHeroFullInfoTypes, IHeroesResponseTypes, IResData } from 'types/HeroTypes';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL as string;
 
@@ -41,7 +41,7 @@ export const heroesApi = createApi({
         }),
 
         //CREATE HERO
-        createHero: builder.mutation<{}, IHeroFullInfoTypes>({
+        createHero: builder.mutation<IResData, IHeroFullInfoTypes>({
             query: (data) => {
                 return {
                     url: `/hero`,
@@ -55,7 +55,7 @@ export const heroesApi = createApi({
         }),
 
         //UPDATE HERO
-        updateHero: builder.mutation<any, IUpdateReqData>({
+        updateHero: builder.mutation<IResData, IUpdateReqData>({
             query: ({ formData, heroId }) => ({
                 url: `/hero/${heroId}`,
                 credentials: 'include',
@@ -67,7 +67,7 @@ export const heroesApi = createApi({
         }),
 
         //DELETE HERO
-        deleteHero: builder.mutation<any, string>({
+        deleteHero: builder.mutation<IResData, string>({
             query: (id: string) => ({
                 url: `/hero/${id}`,
                 credentials: 'include',

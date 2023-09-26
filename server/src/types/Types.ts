@@ -1,4 +1,3 @@
-// import { File } from "buffer";
 import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 
@@ -21,7 +20,6 @@ export interface HeroBodyResponse extends Response {
     superpowers?: string,
     catch_phase?: string,
     images?: IImagesList[],
-    // images?: IImagesLinksList[],
 }
 
 export interface UpdateHeroParams extends ParamsDictionary {
@@ -34,7 +32,6 @@ export interface HeroBody {
     origin_description?: string,
     superpowers?: string,
     catch_phase?: string,
-    // images: File[],
     images: IImagesList[],
     images_remain: IImagesLinksList[],
 }

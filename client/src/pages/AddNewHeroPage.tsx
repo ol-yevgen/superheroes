@@ -1,5 +1,5 @@
 import { Typography, Paper, Box } from '@mui/material';
-import { Input, SubmitButton, FileUploader,} from "components/index";
+import { Input, SubmitButton, FileUploader, Spinner,} from "components/index";
 import {  useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,12 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroCreateSchema } from 'schemas/heroSchema'
 import { useCreateHeroMutation } from 'redux/api/heroesApi';
 import { convertToBase64 } from 'utils/base64'
+import { successToast, errorToast } from 'utils/toast';
+import { IErrorMessage } from 'types/HeroTypes';
 
 export const AddNewHeroPage = () => {
-    const [createHero, { isError, isSuccess, isLoading }] = useCreateHeroMutation()
+    const [createHero, { isError, isSuccess, isLoading, data: resData, error }] = useCreateHeroMutation()
+
 
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
     const navigate = useNavigate()
@@ -37,7 +40,21 @@ export const AddNewHeroPage = () => {
             mode: "onChange",
             resolver: yupResolver(heroCreateSchema)
         }
-    )
+        )
+    
+    useEffect(() => {
+        if (isSuccess) {
+            successToast(resData?.message as string)
+            setSelectedPictures([])
+            reset()
+            navigate(`/heroes/${resData?.heroId}`)
+        }
+        if (isError) {
+            const errorMessage = error as IErrorMessage
+
+            errorToast(errorMessage?.data as string)
+        }
+    }, [isError, isSuccess, resData?.message, resData?.heroId, error, reset, navigate])
 
     useEffect(() => {
         if (selectedPictures.length === 0) {
@@ -54,10 +71,7 @@ export const AddNewHeroPage = () => {
 
         await createHero(formData)
 
-        setSelectedPictures([])
-        reset()
-        navigate(`/heroes`)
-    }, [createHero, getValues, reset, selectedPictures, navigate]);
+    }, [createHero, getValues, selectedPictures]);
 
     return (
         <Paper elevation={3} sx={{ padding: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mb: '30px'}}>
@@ -123,11 +137,14 @@ export const AddNewHeroPage = () => {
                     setSelectedPictures={setSelectedPictures}
                 />
 
-                <SubmitButton
-                    label={'Create hero'}
-                    onHandleSubmit={onHandleCreateSubmit}
-                    isValid={isValid}
-                />
+                {isLoading
+                    ? <Spinner />
+                    : <SubmitButton
+                        label={'Create hero'}
+                        onHandleSubmit={onHandleCreateSubmit}
+                        isValid={isValid}
+                    />
+                }
             </Box>
         </Paper>
     );

@@ -32,7 +32,7 @@ const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionMod
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: '70%',
+                width: { xs: '90% ', md: '70%' },
                 height: image ? 'auto' : '90%',
                 bgcolor: 'background.paper',
                 outline: 'none',

@@ -1,19 +1,31 @@
 import { IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useDeleteHeroMutation } from "redux/api/heroesApi";
+import { IErrorMessage } from "types/HeroTypes";
+import { errorToast, successToast } from "utils/toast";
 
 const DeleteButton = () => {
     const heroId = useParams().id as string
 
-    const [ deleteHero, {data}] = useDeleteHeroMutation( )
+    const [deleteHero, { isError, isSuccess, data: message, error }] = useDeleteHeroMutation()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (isSuccess) {
+            successToast(message?.message as string)
+            navigate('/heroes')
+        }
+        if (isError) {
+            const errorMessage = error as IErrorMessage
+            errorToast(errorMessage?.data as string)
+        }
+    }, [isError, isSuccess, message?.message, error, navigate])
 
     const onDeleteHero = useCallback(async () => {
         await deleteHero(heroId)
-        navigate('/heroes')
-    }, [heroId, navigate, deleteHero])
+    }, [heroId, deleteHero])
 
     return (
         <IconButton

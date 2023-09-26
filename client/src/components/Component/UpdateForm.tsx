@@ -1,25 +1,24 @@
 import { Typography, Paper, Box } from '@mui/material';
-import { Input, SubmitButton, FileUploader, FormImagesList } from "components/index";
+import { Input, SubmitButton, FileUploader, FormImagesList, Spinner } from "components/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroUpdateSchema } from 'schemas/heroSchema'
 import { useUpdateHeroMutation } from 'redux/api/heroesApi';
-import { ICreateUpdateFormPropsTypes, IImageListResponseTypes } from 'types/HeroTypes';
+import { ICreateUpdateFormPropsTypes, IImageListResponseTypes, IErrorMessage } from 'types/HeroTypes';
 import { useAppDispatch } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
 import { convertToBase64 } from 'utils/base64';
+import { successToast, errorToast } from 'utils/toast';
 
 const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     const heroId = useParams().id as string
     const dispatch = useAppDispatch()
 
-    const [updateHero, { isError, isSuccess, error, data }] = useUpdateHeroMutation()
-
+    const [updateHero, { isLoading, isError, isSuccess, error, data: message }] = useUpdateHeroMutation()
     const [imageLinksRemain, setImageLinksRemain] = useState<IImageListResponseTypes[]>(heroData?.images)
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
-
     const [errorMessage, setErrorMessage] = useState<boolean>(false)
 
     const {
@@ -49,6 +48,20 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     )
 
     useEffect(() => {
+        if (isSuccess) {
+            successToast(message?.message as string)
+            dispatch(setModal())
+            setSelectedPictures([])
+            reset()
+        }
+        if (isError) {
+            const errorMessage = error as IErrorMessage
+
+            errorToast(errorMessage?.data as string)
+        }
+    }, [isError, isSuccess, message?.message, error, reset, dispatch])
+
+    useEffect(() => {
         if (selectedPictures.length === 0) {
             resetField('images')
         }
@@ -70,6 +83,7 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
 
     const onHandleUpdateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
         const base64 = await convertToBase64(selectedPictures)
         const formData = JSON.parse(JSON.stringify(getValues()))
         formData.images = base64
@@ -77,15 +91,12 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
 
         if (selectedPictures.length !== 0 || imageLinksRemain.length !== 0) {
             updateHero({ formData, heroId });
-            setSelectedPictures([])
-            dispatch(setModal())
-            reset()
         }
 
-    }, [updateHero, getValues, reset, selectedPictures, heroId, imageLinksRemain, dispatch]);
+    }, [updateHero, getValues, selectedPictures, heroId, imageLinksRemain]);
 
     return (
-        <Paper elevation={3} sx={{ minHeight: '100%',  padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Paper elevation={3} sx={{ minHeight: '100%', padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography component="h1" variant='h6' >
                 Update hero
                 <Box component='span' fontWeight='bold' ml='10px' fontFamily='monospace'>
@@ -155,15 +166,19 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                 />
 
                 {errorMessage &&
-                    <Typography component="span" sx={{color: 'red'}}>
+                    <Typography component="span" sx={{ color: 'red' }}>
                         Please, choose at least one picture
                     </Typography>}
 
-                <SubmitButton
-                    label={'Update hero'}
-                    onHandleSubmit={onHandleUpdateSubmit}
-                    isValid={isValid && !errorMessage}
-                />
+                {isLoading
+                    ? <Spinner />
+                    : <SubmitButton
+                        label={'Update hero'}
+                        onHandleSubmit={onHandleUpdateSubmit}
+                        isValid={isValid && !errorMessage}
+                    />
+                }
+
             </Box>
         </Paper>
     );

@@ -1,11 +1,17 @@
-// export interface IImageListResponseTypes {
-//     _id?: string,
-//     link: string
-// }
-
 export interface IImageListResponseTypes {
     _id?: string,
     image: string
+}
+
+export interface IErrorMessage {
+    data: string,
+    status: number
+}
+
+export interface IResData {
+    error?: IErrorMessage,
+    message: string,
+    heroId?: string
 }
 
 export interface IHeroShortTypes {

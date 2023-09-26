@@ -14,7 +14,7 @@ const PaginationControlled = ({ currentPage, totalPages, setPage }: IPaginationP
     };
 
     return (
-        <Stack spacing={2} sx={{pt: '20px'}}>
+        <Stack spacing={2} sx={{ pt: '20px', pb: '10px' }}>
             <Pagination count={totalPages} page={currentPage} onChange={handleChange} />
         </Stack>
     );

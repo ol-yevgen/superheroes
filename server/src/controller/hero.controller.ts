@@ -21,7 +21,7 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         const heroes = await Hero.find().sort({ createdAt: -1 }).skip(offset).limit(OFFSET_LIMIT).exec()
 
         if (!heroes) {
-            return res.status(400).json({ message: 'No any heroes' })
+            return res.status(400).json('No any heroes')
         }
 
         const allHeroesShort: IAllHeroesShortType[] = []
@@ -32,7 +32,7 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         })
 
         logger.info('All heroes list download')
-        res.status(200).json({ allHeroesShort, totalPages })
+        res.status(200).json({ allHeroesShort, totalPages, message: 'No any heroes' })
     } catch (error) {
         next(error)
     }
@@ -45,14 +45,14 @@ export const getHero: RequestHandler = async (req: Request, res: Response, next:
         if (!mongoose.isValidObjectId(heroId)) {
 
             logger.error('Invalid hero id')
-            return res.status(400).json({ message: 'Invalid hero id' })
+            return res.status(400).json('Invalid hero id')
         }
 
         const hero = await Hero.findById(heroId).exec()
 
         if (!hero) {
             logger.error('Hero not found')
-            return res.status(404).json({ message: 'Hero not found' })
+            return res.status(404).json('Hero not found')
         }
 
         logger.info('Hero info download')
@@ -73,6 +73,22 @@ export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             images
         } = req.body
 
+        const nicknameExisted = await Hero.findOne({ nickname })
+
+        if (!nickname
+            || !real_name
+            || !origin_description
+            || !superpowers
+            || !catch_phase
+        ) {
+            logger.error('Some field was not filled up')
+            return res.status(400).json('All fields are required')
+        }
+
+        if (nicknameExisted) {
+            return res.status(400).json('Hero with same nickname already exist')
+        }
+
         const newHero = new Hero({
             nickname: nickname,
             real_name: real_name,
@@ -84,7 +100,9 @@ export const createHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
 
         await newHero.save()
 
-        res.json({ message: `Hero has been created` });
+        const newHeroId = await Hero.findOne({ nickname }).exec()
+
+        res.json({ heroId: newHeroId?._id, message: `Hero has been created` });
         logger.info('File has been upload')
     } catch (error) {
         console.error("Error saving images:", error);
@@ -107,18 +125,19 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
         } = req.body
 
         const updatedImageList = [...images_remain, ...images]
+
         const nicknameExisted = await Hero.findOne({ nickname })
 
         if (!mongoose.isValidObjectId(heroId)) {
             logger.error('Invalid hero id')
-            return res.status(400).json({ message: 'Invalid hero id' })
+            return res.status(400).json('Invalid hero id')
         }
 
         const hero = await Hero.findById(heroId).exec()
 
         if (!hero) {
             logger.error('Hero not found')
-            return res.status(400).json({ message: 'Hero not found' })
+            return res.status(400).json('Hero not found')
         }
 
         if (!nickname
@@ -129,12 +148,12 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
             
         ) {
             logger.error('Some field was not filled up')
-            return res.status(400).json({ message: 'All fields are required' })
+            return res.status(400).json('All fields are required')
         }
 
         if (nicknameExisted && (nicknameExisted.id !== heroId)) {
             logger.error('Hero with same nickname already exist')
-            return res.status(400).json({ message: 'Hero with same nickname already exist' })
+            return res.status(400).json('Hero with same nickname already exist')
         }
 
         hero.nickname = nickname
@@ -146,8 +165,8 @@ export const updateHero: RequestHandler<UpdateHeroParams, unknown, HeroBody, unk
         
         await hero.save()
 
-        res.status(201).json({ message: 'Hero has been updated' })
-        logger.info('Hero has been updated')
+        res.status(201).json({ message: `Hero ${hero.nickname} has been updated` })
+        logger.info(`Hero ${hero.nickname} has been updated`)
 
     } catch (error) {
         next(error)
@@ -161,20 +180,20 @@ export const deleteHero: RequestHandler = async (req: Request, res: Response, ne
 
         if (!mongoose.isValidObjectId(heroId)) {
             logger.error('Invalid hero id')
-            return res.status(404).json({ message: 'Invalid hero id' })
+            return res.status(404).json('Invalid hero id')
         }
 
         const hero = await Hero.findById(heroId).exec()
 
         if (!hero) {
             logger.error('Hero not found')
-            return res.status(404).json({ message: 'Hero not found' })
+            return res.status(404).json('Hero not found')
         }
 
         await hero.deleteOne()
 
         logger.info('Hero has been deleted')
-        res.status(201).json({ id: heroId, message: 'Hero has been deleted' })
+        res.status(201).json({ message: `Hero ${hero.nickname} has been deleted` })
     } catch (error) {
         next(error)
     }

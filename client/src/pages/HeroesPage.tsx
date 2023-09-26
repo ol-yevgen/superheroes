@@ -18,7 +18,7 @@ export const HeroesPage: FC = () => {
         <>
             {heroes.length === 0 
                 ? <Typography component="h1" variant="h4" sx={{textAlign: 'center'}}>
-                    No any heroes in database
+                    {data?.message}
                 </Typography>
                 : <Box component='section' sx={{ width: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', flexGrow: '1' }}>
 
