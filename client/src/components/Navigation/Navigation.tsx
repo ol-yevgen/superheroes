@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@mui/material'
+import { useAppSelector } from 'redux/store';
 
 const authNav = [
     {
         title: 'All heroes',
         route: '/heroes',
+    },
+    {
+        title: 'Favorites',
+        route: '/favorites',
     },
     {
         title: 'New hero',
@@ -13,12 +18,12 @@ const authNav = [
 ];
 const notAuthNav = [
     {
-        title: 'Login',
-        route: '/',
+        title: 'All heroes',
+        route: '/heroes',
     },
     {
-        title: 'Sign Up',
-        route: '/registration',
+        title: 'sign in',
+        route: '/',
     },
 ]
 
@@ -27,11 +32,15 @@ interface NavigationType {
 }
 
 const Navigation = ({ handleCloseNavMenu }: NavigationType) => {
-
+    const ROLE = process.env.REACT_APP_ROLE as string
+    const { userInfo, accessToken} = useAppSelector((state) => state.authState)
+    const isAdmin = userInfo?.role === ROLE
+    const navigationLinks = accessToken ? isAdmin ? authNav : authNav.slice(0, 2) : notAuthNav
+    
     return (
         <>
             {
-                authNav.map((page) => (
+                navigationLinks.map((page) => (
                     <Link key={page.title} to={page.route}>
                         <Button
                             onClick={handleCloseNavMenu}

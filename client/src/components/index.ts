@@ -1,5 +1,5 @@
 // Layout
-export { default as Header } from "./Layout/Heder";
+export { default as Header } from "./Layout/Header";
 export { default as Footer } from "./Layout/Footer";
 
 // Navigation

@@ -5,8 +5,8 @@ import { FC } from "react"
 interface InputTypes {
     label: string,
     name: string,
-    error: FieldError | undefined ,
     register: any,
+    error?: FieldError | undefined,
     multiline: boolean
     maxRows: number,
 }

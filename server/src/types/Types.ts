@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
+import jwt from 'jsonwebtoken'
 
+declare module 'jsonwebtoken' {
+    export interface UserIDJwtPayload extends jwt.JwtPayload {
+        userId: string
+    }
+}
 export interface UserIdRequest extends Request {
     userId?: string
 }

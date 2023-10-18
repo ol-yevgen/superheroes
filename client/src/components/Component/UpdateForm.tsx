@@ -7,15 +7,17 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroUpdateSchema } from 'schemas/heroSchema'
 import { useUpdateHeroMutation } from 'redux/api/heroesApi';
 import { ICreateUpdateFormPropsTypes, IImageListResponseTypes, IErrorMessage } from 'types/HeroTypes';
-import { useAppDispatch } from 'redux/store';
+import { useAppDispatch, useAppSelector } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
 import { convertToBase64 } from 'utils/base64';
 import { successToast, errorToast } from 'utils/toast';
 
 const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
-    const heroId = useParams().id as string
+    const id = useParams().id as string
     const dispatch = useAppDispatch()
 
+    const accessToken = useAppSelector((state) => state.authState.accessToken) as string
+    
     const [updateHero, { isLoading, isError, isSuccess, error, data: message }] = useUpdateHeroMutation()
     const [imageLinksRemain, setImageLinksRemain] = useState<IImageListResponseTypes[]>(heroData?.images)
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
@@ -90,10 +92,10 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         formData.images_remain = imageLinksRemain
 
         if (selectedPictures.length !== 0 || imageLinksRemain.length !== 0) {
-            updateHero({ formData, heroId });
+            updateHero({ formData, id, accessToken })
         }
 
-    }, [updateHero, getValues, selectedPictures, heroId, imageLinksRemain]);
+    }, [updateHero, getValues, selectedPictures, id, imageLinksRemain, accessToken]);
 
     return (
         <Paper elevation={3} sx={{ minHeight: '100%', padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

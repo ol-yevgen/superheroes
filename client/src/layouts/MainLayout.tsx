@@ -1,12 +1,33 @@
-import { Header, Footer } from "../components/index"
+import { Header, Footer, Spinner } from "../components/index"
 import { Box, Container } from "@mui/material"
-import { useRoutes } from "utils/routes"
-import { FC } from "react"
+import { ProtectedRoutes } from "utils/routes"
+import { FC, useEffect } from "react"
 import { ToastContainer } from 'react-toastify';
+import { useRefreshLoginQuery, useLogoutUserMutation } from "redux/api/authApi";
+import { Location, NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 
 export const MainLayout: FC = () => {
+    const { isLoading, isError, isSuccess, error, data } = useRefreshLoginQuery()
+    const [logoutUser] = useLogoutUserMutation()
+    
+    const navigate: NavigateFunction = useNavigate()
+    const location: Location = useLocation()
 
-    const routes = useRoutes()
+    useEffect(() => {
+        if (isSuccess) {
+            const interval = setTimeout(() => {
+
+                navigate(`${location.pathname}`, { replace: false })
+            }, 0)
+
+            return () => clearTimeout(interval)
+
+        }
+        if (isError) {
+            logoutUser()
+            navigate('/login')
+        }
+    }, [isSuccess, isError])
 
     return (
         <Box minHeight='100vh' sx={{ width: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', overflow: 'hidden' }}>
@@ -23,7 +44,7 @@ export const MainLayout: FC = () => {
                     color: 'text.primary',
                 }
             }>
-                {routes}
+                {isLoading && !isSuccess ? <Spinner /> :  <ProtectedRoutes />}
             </Container>
 
             <Footer />

@@ -11,13 +11,13 @@ export const HeroesPage: FC = () => {
 
     const heroes = data?.allHeroesShort as IHeroShortTypes[]
     const totalPages = data?.totalPages as number
-    
+
     if (isLoading) return <Spinner />
 
     return (
         <>
-            {heroes.length === 0 
-                ? <Typography component="h1" variant="h4" sx={{textAlign: 'center'}}>
+            {heroes.length === 0
+                ? <Typography component="h1" variant="h4" sx={{ textAlign: 'center' }}>
                     {data?.message}
                 </Typography>
                 : <Box component='section' sx={{ width: '100%', minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', flexGrow: '1' }}>

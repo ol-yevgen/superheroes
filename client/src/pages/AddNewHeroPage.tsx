@@ -9,10 +9,11 @@ import { useCreateHeroMutation } from 'redux/api/heroesApi';
 import { convertToBase64 } from 'utils/base64'
 import { successToast, errorToast } from 'utils/toast';
 import { IErrorMessage } from 'types/HeroTypes';
+import { useAppSelector } from 'redux/store';
 
 export const AddNewHeroPage = () => {
     const [createHero, { isError, isSuccess, isLoading, data: resData, error }] = useCreateHeroMutation()
-
+    const accessToken = useAppSelector((state) => state.authState.accessToken) as string
 
     const [selectedPictures, setSelectedPictures] = useState<File[]>([]);
     const navigate = useNavigate()
@@ -69,9 +70,9 @@ export const AddNewHeroPage = () => {
         const formData = JSON.parse(JSON.stringify(getValues()))
         formData.images = base64
 
-        await createHero(formData)
+        await createHero({formData, accessToken})
 
-    }, [createHero, getValues, selectedPictures]);
+    }, [createHero, getValues, selectedPictures, accessToken]);
 
     return (
         <Paper elevation={3} sx={{ padding: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mb: '30px'}}>
@@ -93,7 +94,6 @@ export const AddNewHeroPage = () => {
                         register={register}
                         multiline={false}
                         maxRows={1}
-
                     />
                     <Input
                         label='Real name'

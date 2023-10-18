@@ -15,7 +15,7 @@ const HeroCard = ({ heroData }: IHeroDataTypes) => {
                         component="img"
                         height="200"
                         image={heroData.image}
-                        alt="green iguana"
+                        alt={heroData.nickname}
                         sx={{
                             maxHeight: '200px', transition: '.8s',
                             '&:hover': {

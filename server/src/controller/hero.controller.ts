@@ -17,7 +17,7 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
         const page = req.query.page || 1
         const offset = (+page - 1) * OFFSET_LIMIT
 
-        const totalPages = Math.ceil(await Hero.find().count().exec() / 5)
+        const totalPages = Math.ceil(await Hero.find().count().exec() / OFFSET_LIMIT)
         const heroes = await Hero.find().sort({ createdAt: -1 }).skip(offset).limit(OFFSET_LIMIT).exec()
 
         if (!heroes) {
@@ -38,10 +38,16 @@ export const getAllHeroes: RequestHandler = async (req: UserIdRequest, res: Resp
     }
 }
 
-export const getHero: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-    const heroId = req.params.heroId
+interface AccessTokenRequest extends Request {
+    accessToken?: string
+}
 
+export const getHero: RequestHandler = async (req: AccessTokenRequest, res: Response, next: NextFunction) => {
+    
     try {
+        const accessToken = req.accessToken
+        const heroId = req.params.heroId
+
         if (!mongoose.isValidObjectId(heroId)) {
 
             logger.error('Invalid hero id')
@@ -56,7 +62,7 @@ export const getHero: RequestHandler = async (req: Request, res: Response, next:
         }
 
         logger.info('Hero info download')
-        res.status(200).json(hero)
+        res.status(200).json({hero, accessToken})
     } catch (error) {
         next(error)
     }

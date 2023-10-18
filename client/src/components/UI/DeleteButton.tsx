@@ -5,9 +5,11 @@ import { useCallback, useEffect } from "react";
 import { useDeleteHeroMutation } from "redux/api/heroesApi";
 import { IErrorMessage } from "types/HeroTypes";
 import { errorToast, successToast } from "utils/toast";
+import { useAppSelector } from "redux/store";
 
 const DeleteButton = () => {
-    const heroId = useParams().id as string
+    const id = useParams().id as string
+    const accessToken  = useAppSelector((state) => state.authState.accessToken) as string
 
     const [deleteHero, { isError, isSuccess, data: message, error }] = useDeleteHeroMutation()
     const navigate = useNavigate()
@@ -24,8 +26,8 @@ const DeleteButton = () => {
     }, [isError, isSuccess, message?.message, error, navigate])
 
     const onDeleteHero = useCallback(async () => {
-        await deleteHero(heroId)
-    }, [heroId, deleteHero])
+        await deleteHero({ id, accessToken })
+    }, [id, deleteHero, accessToken])
 
     return (
         <IconButton

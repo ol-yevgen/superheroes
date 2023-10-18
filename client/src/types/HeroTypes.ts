@@ -1,6 +1,12 @@
+import { IAccessToken } from 'types/AuthTypes'
+
 export interface IImageListResponseTypes {
     _id?: string,
     image: string
+}
+
+export interface IHeroPageReq extends IAccessToken {
+    id: string
 }
 
 export interface IErrorMessage {
@@ -30,12 +36,25 @@ export interface IHeroFullInfoTypes {
     images?: IImageListResponseTypes[] | [] | string | any
 }
 
+export interface IHeroFullInfoResponse extends IAccessToken {
+    hero: IHeroFullInfoTypes
+    message?: string
+}
+
+export interface IAddHeroReq extends IAccessToken {
+    formData: IHeroFullInfoTypes
+}
+
 export interface IHeroesResponseTypes {
     allHeroesShort: IHeroShortTypes[],
     totalPages: number,
     message?: string
 }
 
+export interface IUpdateReqData extends IAccessToken {
+    formData: FormData,
+    id: string
+}
 export interface ICreateUpdateFormPropsTypes {
     heroData: IHeroFullInfoTypes | null | undefined,
 }
