@@ -4,8 +4,9 @@ import { HeroDetailPage } from 'pages/HeroDetailPage'
 import { AddNewHeroPage } from 'pages/AddNewHeroPage'
 import { AuthorizationPage } from 'pages/AuthorizationPage'
 import { useAppSelector } from 'redux/store'
+import { memo } from 'react'
 
-export const ProtectedRoutes = () => {
+export const ProtectedRoutes = memo(() => {
     const { accessToken } = useAppSelector((state) => state.authState)
 
     if (!!accessToken) {
@@ -47,8 +48,4 @@ export const ProtectedRoutes = () => {
             </Routes>
         )
     }
-
-
-
-
-}
+})

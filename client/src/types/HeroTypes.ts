@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react'
 import { IAccessToken } from 'types/AuthTypes'
 
 export interface IImageListResponseTypes {
@@ -61,7 +62,9 @@ export interface ICreateUpdateFormPropsTypes {
 
 export interface ITransitionModal {
     open: boolean,
-    image: string,
-    data?: IHeroFullInfoTypes,
-    handleOpenClose: (link: string) => void,
+    image: string | null,
+    // data?: IHeroFullInfoTypes,
+    handleOpenClose?: (link: string) => void,
+    content: JSX.Element,
+    disclaimerClose?: () => void
 }

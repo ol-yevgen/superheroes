@@ -1,18 +1,16 @@
 import { Container, Typography, Paper } from '@mui/material';
-import { Input, SubmitButton, Spinner } from "../components/index";
+import { Input, SubmitButton, Spinner, Disclaimer, TransitionsModal } from "../components/index";
+import {useRegistrationUserMutation, useLoginUserMutation,} from 'redux/api/authApi'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AccountCircle } from '@mui/icons-material';
-import { FC, FormEvent, useEffect, useState } from "react"
+import { FC, FormEvent, memo, useCallback, useEffect, useState } from "react"
 import { loginSchema, registrationSchema } from 'schemas/authSchema'
-import { successToast, errorToast } from 'utils/toast';
+import { successToast, errorToast } from 'utils/toast'
 
-import {
-    useRegistrationUserMutation,
-    useLoginUserMutation,
-} from 'redux/api/authApi'
-
-export const AuthorizationPage: FC = () => {
+export const AuthorizationPage: FC = memo(() => {
+    const [isRegistration, setIsRegistration] = useState<boolean>(false)
+    const [disclaimerStatus, setDisclaimerStatus] = useState(true)
 
     const [loginUser, {
         isError: loginIsError,
@@ -29,8 +27,6 @@ export const AuthorizationPage: FC = () => {
         data: registrationData,
         error: registrationError
     }] = useRegistrationUserMutation()
-
-    const [isRegistration, setIsRegistration] = useState<boolean>(false)
 
     const {
         register,
@@ -76,6 +72,10 @@ export const AuthorizationPage: FC = () => {
         } catch (error) { }
     };
 
+    const closeDisclaimer = useCallback(() => {
+        setDisclaimerStatus(false)
+    }, [])
+
     return (
         <Container component="main" maxWidth="xs">
             <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -95,7 +95,6 @@ export const AuthorizationPage: FC = () => {
                                 error={errors?.firstName}
                                 register={register}
                                 multiline={false}
-                                maxRows={1}
                             />
                             <Input
                                 label='Last name'
@@ -103,7 +102,6 @@ export const AuthorizationPage: FC = () => {
                                 error={errors?.lastName}
                                 register={register}
                                 multiline={false}
-                                maxRows={1}
                             />
                         </>
                         : null}
@@ -113,7 +111,6 @@ export const AuthorizationPage: FC = () => {
                         error={errors?.email}
                         register={register}
                         multiline={false}
-                        maxRows={1}
                     />
                     <Input
                         label='password'
@@ -121,14 +118,16 @@ export const AuthorizationPage: FC = () => {
                         error={errors?.password}
                         register={register}
                         multiline={false}
-                        maxRows={1}
                     />
 
-                    <SubmitButton
-                        label={isRegistration ? 'Registration' : 'Sign in'}
-                        onHandleSubmit={isRegistration ? onRegistrationHandleSubmit : onLoginHandleSubmit}
-                        isValid={isValid}
-                    />
+                    {loginLoading || registrationLoading
+                        ? <Spinner />
+                        : <SubmitButton
+                            label={isRegistration ? 'Registration' : 'Sign in'}
+                            onHandleSubmit={isRegistration ? onRegistrationHandleSubmit : onLoginHandleSubmit}
+                            isValid={isValid}
+                        />
+                    }
                     <Typography
                         component="h2"
                         sx={{
@@ -142,16 +141,15 @@ export const AuthorizationPage: FC = () => {
                     >
                         {isRegistration ? 'Do You have an account, Sign in' : 'You don\'t have an account, Sign up'}
                     </Typography>
-                    {/* {loading
-                        ? <Spinner />
-                        : <SubmitButton
-                            label='Sign In'
-                            onHandleSubmit={onHandleSubmit}
-                            isValid={isValid}
-                        />
-                    } */}
+                    
                 </form>
             </Paper>
+            <TransitionsModal
+                open={disclaimerStatus}
+                image='disclaimer'
+                content={<Disclaimer />}
+                disclaimerClose={closeDisclaimer}
+            />
         </Container>
     );
-}
+})

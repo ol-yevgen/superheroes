@@ -1,14 +1,18 @@
-import { Modal, Backdrop, Box, CardMedia } from '@mui/material';
+import { Modal, Backdrop, Box } from '@mui/material';
 import { setModal } from 'redux/features/modalSlice';
 import { useAppDispatch } from 'redux/store';
 import { ITransitionModal } from 'types/HeroTypes';
-import {UpdateForm} from 'components/index'
 
-const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionModal) => {
+const TransitionsModal = ({ open, image, handleOpenClose, content, disclaimerClose }: ITransitionModal) => {
     const dispatch = useAppDispatch()
 
     const closeModal = (link: string) => {
-        handleOpenClose(link)
+        if (handleOpenClose) {
+            handleOpenClose(link)
+        }
+        if (disclaimerClose) {
+            disclaimerClose()
+        }
         dispatch(setModal())
     }
 
@@ -36,22 +40,15 @@ const TransitionsModal = ({ open, image, handleOpenClose, data }: ITransitionMod
                 height: image ? 'auto' : '90%',
                 bgcolor: 'background.paper',
                 outline: 'none',
-                overflowY: image ? 'hidden' : 'scroll'
+                overflowY: image ? 'hidden' : 'scroll',
+                borderRadius: '10px',
+                // overflow: 'hidden'
             }}>
-                {image
-                    ? <CardMedia
-                        component='img'
-                        width='100%'
-                        height='100%'
-                        image={image}
-                        alt={image}
-                    />
-                    : < UpdateForm heroData={data} />
-                }
+                {content}
             </Box>
 
         </Modal>
-    );
+    )
 }
 
 export default TransitionsModal

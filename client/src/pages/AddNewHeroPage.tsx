@@ -93,7 +93,6 @@ export const AddNewHeroPage = () => {
                         error={errors?.nickname}
                         register={register}
                         multiline={false}
-                        maxRows={1}
                     />
                     <Input
                         label='Real name'
@@ -101,7 +100,6 @@ export const AddNewHeroPage = () => {
                         error={errors?.real_name}
                         register={register}
                         multiline={false}
-                        maxRows={1}
                     />
                 </Box>
                 <Input
@@ -110,7 +108,6 @@ export const AddNewHeroPage = () => {
                     error={errors?.superpowers}
                     register={register}
                     multiline={true}
-                    maxRows={3}
                 />
 
                 <Input
@@ -119,7 +116,6 @@ export const AddNewHeroPage = () => {
                     error={errors?.catch_phase}
                     register={register}
                     multiline={true}
-                    maxRows={3}
                 />
 
                 <Input
@@ -128,7 +124,6 @@ export const AddNewHeroPage = () => {
                     error={errors?.origin_description}
                     register={register}
                     multiline={true}
-                    maxRows={5}
                 />
 
                 <FileUploader

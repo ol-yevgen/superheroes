@@ -6,13 +6,16 @@ import { useParams } from 'react-router-dom';
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { heroUpdateSchema } from 'schemas/heroSchema'
 import { useUpdateHeroMutation } from 'redux/api/heroesApi';
-import { ICreateUpdateFormPropsTypes, IImageListResponseTypes, IErrorMessage } from 'types/HeroTypes';
+import { ICreateUpdateFormPropsTypes, IImageListResponseTypes, IErrorMessage, IHeroFullInfoTypes } from 'types/HeroTypes';
 import { useAppDispatch, useAppSelector } from 'redux/store';
 import { setModal } from 'redux/features/modalSlice';
 import { convertToBase64 } from 'utils/base64';
 import { successToast, errorToast } from 'utils/toast';
 
 const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
+
+    const { nickname, real_name, origin_description, superpowers, catch_phase } = heroData as IHeroFullInfoTypes
+    
     const id = useParams().id as string
     const dispatch = useAppDispatch()
 
@@ -36,11 +39,11 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
     } = useForm(
         {
             defaultValues: {
-                nickname: heroData?.nickname,
-                real_name: heroData?.real_name,
-                superpowers: heroData?.superpowers,
-                catch_phase: heroData?.catch_phase,
-                origin_description: heroData?.origin_description,
+                nickname,
+                real_name,
+                superpowers,
+                catch_phase,
+                origin_description,
                 images: [],
                 images_remain: [] as IImageListResponseTypes[],
             },
@@ -77,11 +80,11 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
         }
     }, [selectedPictures, imageLinksRemain])
 
-    const handleDeleteExistingPicture = async (index: number) => {
+    const handleDeleteExistingPicture = useCallback(async (index: number) => {
         setImageLinksRemain((prevRemainImage) =>
             prevRemainImage.filter((_, i) => i !== index)
         );
-    };
+    }, [])
 
     const onHandleUpdateSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -99,13 +102,16 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
 
     return (
         <Paper elevation={3} sx={{ minHeight: '100%', padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            
             <Typography component="h1" variant='h6' >
                 Update hero
                 <Box component='span' fontWeight='bold' ml='10px' fontFamily='monospace'>
-                    {heroData?.nickname}
+                    {nickname}
                 </Box>
             </Typography>
+
             {isError && <Box component='span'>Error</Box>}
+
             <Box
                 component='form'
                 autoComplete='off'
@@ -120,8 +126,6 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                         error={errors?.nickname}
                         register={register}
                         multiline={false}
-                        maxRows={1}
-
                     />
                     <Input
                         label='Real name'
@@ -129,37 +133,40 @@ const UpdateForm = ({ heroData }: ICreateUpdateFormPropsTypes) => {
                         error={errors?.real_name}
                         register={register}
                         multiline={false}
-                        maxRows={1}
                     />
                 </Box>
+
                 <Input
-                    label='Superpowers'
                     name='superpowers'
+                    label='Superpowers'
                     error={errors?.superpowers}
+                    defaultValue={superpowers}
                     register={register}
                     multiline={true}
-                    maxRows={3}
                 />
 
                 <Input
                     label='Catch phase'
                     name='catch_phase'
                     error={errors?.catch_phase}
+                    defaultValue={catch_phase}
                     register={register}
                     multiline={true}
-                    maxRows={3}
                 />
 
                 <Input
                     label='Description'
                     name='origin_description'
                     error={errors?.origin_description}
+                    defaultValue={origin_description}
                     register={register}
                     multiline={true}
-                    maxRows={5}
                 />
 
-                <FormImagesList imagesList={imageLinksRemain} cancelButton={handleDeleteExistingPicture} />
+                <FormImagesList
+                    imagesList={imageLinksRemain}
+                    cancelButton={handleDeleteExistingPicture}
+                />
 
                 <FileUploader
                     control={control}

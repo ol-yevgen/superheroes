@@ -1,17 +1,18 @@
 import { FieldError } from "react-hook-form"
 import { TextField } from "@mui/material"
-import { FC } from "react"
+import { FC, memo, useMemo } from "react"
 
 interface InputTypes {
     label: string,
     name: string,
     register: any,
     error?: FieldError | undefined,
-    multiline: boolean
-    maxRows: number,
+    multiline: boolean,
+    defaultValue?: string
 }
 
-const Input: FC<InputTypes> = ({ label, name, register, error, multiline, maxRows,  }) => {
+const Input: FC<InputTypes> = memo(({ label, name, register, error, multiline, defaultValue }) => {    
+
     return (
         <TextField
             variant="outlined"
@@ -23,17 +24,19 @@ const Input: FC<InputTypes> = ({ label, name, register, error, multiline, maxRow
             id={name}
             label={label.slice(0, 1).toUpperCase() + label.slice(1)}
             name={name}
-            maxRows={maxRows}
             multiline={multiline}
             error={!!error}
             autoComplete={`new-${name}`}
+            defaultValue={defaultValue}
+            minRows={1}
+            maxRows={50}
             helperText={
-                !!error 
+                !!error
                     ? error.message
                     : ''
             }
         />
     )
-}
+})
 
 export default Input

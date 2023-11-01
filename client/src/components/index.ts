@@ -14,6 +14,7 @@ export { default as PaginationControlled } from './Component/Pagination'
 export { default as HeroCard } from "./Component/HeroCard";
 export { default as FormImagesList } from './Component/FormImagesList'
 export {default as UpdateForm} from './Component/UpdateForm'
+export { default as Disclaimer } from './Component/Disclaimer'
 
 // UI
 export { default as Logo } from "./UI/Logo";

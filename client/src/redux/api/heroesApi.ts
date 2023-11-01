@@ -24,7 +24,7 @@ export const heroesApi = createApi({
                 mode: 'cors',
             }),
             providesTags: ['Heroes'],
-            transformResponse: (result: IHeroesResponseTypes) => result,
+            // transformResponse: (result: IHeroesResponseTypes) => result,
         }),
 
         //GET ONE HERO INFO

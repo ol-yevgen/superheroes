@@ -33,7 +33,6 @@ export const authApi = createApi({
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    console.log(data)
                     localStorage.setItem(userStorage, JSON.stringify(data.userInfo))
                     dispatch(setAccess(data.accessToken as IAccessToken));
                     dispatch(setUser(data.userInfo as IUserPayload));
@@ -50,7 +49,7 @@ export const authApi = createApi({
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    const userInfo = JSON.parse(localStorage.getItem(userStorage) as string)
+                    const userInfo = await JSON.parse(localStorage.getItem(userStorage) as string)
                     if (data && userInfo) {
                         dispatch(setAccess(data.accessToken as IAccessToken));
                         dispatch(setUser(userInfo as IUserPayload));

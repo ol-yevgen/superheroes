@@ -1,7 +1,7 @@
 import { Header, Footer, Spinner } from "../components/index"
 import { Box, Container } from "@mui/material"
 import { ProtectedRoutes } from "utils/routes"
-import { FC, useEffect } from "react"
+import { FC, memo, useEffect } from "react"
 import { ToastContainer } from 'react-toastify';
 import { useRefreshLoginQuery, useLogoutUserMutation } from "redux/api/authApi";
 import { Location, NavigateFunction, useLocation, useNavigate } from "react-router-dom";
